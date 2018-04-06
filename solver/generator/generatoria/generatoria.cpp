@@ -1,0 +1,1 @@
+#include "generatoria.hpp"

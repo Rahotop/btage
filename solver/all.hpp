@@ -1,0 +1,8 @@
+#include "solver.hpp"
+#include "plot/plot.hpp"
+#include "algogen/all.hpp"
+#include "function/all.hpp"
+#include "generator/all.hpp"
+#include "individual/all.hpp"
+#include "localsearch/all.hpp"
+#include "complete/all.hpp"

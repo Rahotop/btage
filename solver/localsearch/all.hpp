@@ -1,0 +1,6 @@
+#include "localsearch.hpp"
+#include "descent/descent.hpp"
+#include "descent/fixedsizedescent/fixedsizedescent.hpp"
+#include "descent/fixedsizedescent/fixedsizedescentcomp/fixedsizedescentcomp.hpp"
+#include "ils/ils.hpp"
+#include "ils/fixedsizeils/fixedsizeils.hpp"
