@@ -28,8 +28,10 @@ struct opt
 		graphalgogen(false),
 		graphmean(false),
 		graphagregate(false),
+		Rgraphmean(false),
 		meansize(10),
 		agregatesize(10),
+		Rmeansize(10),
 		out("out"),
 		seed(rand()) {}
 
@@ -51,8 +53,10 @@ struct opt
 	bool graphalgogen;
 	bool graphmean;
 	bool graphagregate;
+	bool Rgraphmean;
 	unsigned int meansize;
 	unsigned int agregatesize;
+	unsigned int Rmeansize;
 	std::string out;
 	unsigned int seed;
 };

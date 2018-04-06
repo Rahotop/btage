@@ -95,6 +95,12 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().agregatesize = std::stoi(args[i+1]);
 			i += 2;
 		}
+		else if(args[i] == "-Rgraphmean")
+		{
+			tmp.back().Rgraphmean = true;
+			tmp.back().Rmeansize = std::stoi(args[i+1]);
+			i += 2;
+		}
 		else if(args[i] == "-out")
 		{
 			tmp.back().out = args[i+1];
