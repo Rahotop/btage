@@ -17,11 +17,11 @@ int main(int argc, char **argv)
 
 	for(unsigned int i(0); i < run.size(); ++i)
 	{
-		srand(run[i].seed)
 		//PBTREE
 
 		if(run[i].pbtree)
 		{
+			srand(run[i].seed);
 			PbFunction pb(run[i].n, run[i].depthplus, run[i].depthmin);
 			GeneratorIAIndFunction gen(run[i].n, run[i].maxsizetree, run[i].initdepth);
 			Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphalgogen)
 			{
+				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
 				graph.add(algo, {"fitness"});
 
@@ -43,7 +44,8 @@ int main(int argc, char **argv)
 				settings += "cross : "+std::to_string(run[i].cross)+" ";
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
-				settings += "newop : "+std::to_string(run[i].newop);
+				settings += "newop : "+std::to_string(run[i].newop)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
@@ -52,6 +54,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphmean)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(run[i].n);
 
 				Plot<VectorBool> meanpb(pb);
@@ -96,7 +99,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "meansize : "+std::to_string(run[i].meansize);
+				settings += "meansize : "+std::to_string(run[i].meansize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-mean-graph.jpg", "mean fitness over " + std::to_string(run[i].meansize) + " runs as a function of iterations "+settings);
 
@@ -105,6 +109,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphagregate)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(run[i].n);
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
@@ -129,7 +134,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "agregatesize : "+std::to_string(run[i].agregatesize);
+				settings += "agregatesize : "+std::to_string(run[i].agregatesize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 
@@ -141,6 +147,7 @@ int main(int argc, char **argv)
 
 		if(run[i].nk)
 		{
+			srand(run[i].seed);
 			Nk pb(run[i].pbfile);
 			GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
 			Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
@@ -149,6 +156,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphalgogen)
 			{
+				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
 				graph.add(algo, {"fitness"});
 
@@ -161,7 +169,8 @@ int main(int argc, char **argv)
 				settings += "cross : "+std::to_string(run[i].cross)+" ";
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
-				settings += "newop : "+std::to_string(run[i].newop);
+				settings += "newop : "+std::to_string(run[i].newop)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
@@ -170,6 +179,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphmean)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> meanpb(pb);
@@ -213,7 +223,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "meansize : "+std::to_string(run[i].meansize);
+				settings += "meansize : "+std::to_string(run[i].meansize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-mean-graph.jpg", "mean fitness over " + std::to_string(run[i].meansize) + " runs as a function of iterations "+settings);
 
@@ -222,6 +233,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphagregate)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
@@ -245,7 +257,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "agregatesize : "+std::to_string(run[i].agregatesize);
+				settings += "agregatesize : "+std::to_string(run[i].agregatesize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 
@@ -257,6 +270,7 @@ int main(int argc, char **argv)
 
 		if(run[i].maxsat)
 		{
+			srand(run[i].seed);
 			MaxSat pb(run[i].pbfile);
 			GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
 			Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
@@ -265,6 +279,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphalgogen)
 			{
+				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
 				graph.add(algo, {"fitness"});
 
@@ -277,7 +292,8 @@ int main(int argc, char **argv)
 				settings += "cross : "+std::to_string(run[i].cross)+" ";
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
-				settings += "newop : "+std::to_string(run[i].newop);
+				settings += "newop : "+std::to_string(run[i].newop)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
@@ -286,6 +302,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphmean)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> meanpb(pb);
@@ -329,7 +346,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "meansize : "+std::to_string(run[i].meansize);
+				settings += "meansize : "+std::to_string(run[i].meansize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 				graph.save(run[i].out + "-mean-graph.jpg", "mean fitness over " + std::to_string(run[i].meansize) + " runs as a function of iterations "+settings);
 
@@ -338,6 +356,7 @@ int main(int argc, char **argv)
 
 			if(run[i].graphagregate)
 			{
+				srand(run[i].seed);
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
@@ -361,7 +380,8 @@ int main(int argc, char **argv)
 				settings += "copy : "+std::to_string(run[i].copy)+" ";
 				settings += "mutation : "+std::to_string(run[i].mutation)+" ";
 				settings += "newop : "+std::to_string(run[i].newop)+" ";
-				settings += "agregatesize : "+std::to_string(run[i].agregatesize);
+				settings += "agregatesize : "+std::to_string(run[i].agregatesize)+" ";
+				settings += "seed : "+std::to_string(run[i].seed);
 
 			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 

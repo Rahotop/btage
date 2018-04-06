@@ -134,6 +134,11 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			}
 			++i;
 		}
+		else if(args[i] == "-seed")
+		{
+			tmp.back().seed = std::stoi(args[i+1]);
+			i += 2;
+		}
 		else
 		{
 			std::cout << "error : \"" << args[i] << "\" unknown command." << std::endl;

@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 struct opt
 {
@@ -29,7 +30,8 @@ struct opt
 		graphagregate(false),
 		meansize(10),
 		agregatesize(10),
-		out("out") {}
+		out("out"),
+		seed(rand()) {}
 
 	bool pbtree;
 	bool nk;
@@ -52,6 +54,7 @@ struct opt
 	unsigned int meansize;
 	unsigned int agregatesize;
 	std::string out;
+	unsigned int seed;
 };
 
 std::vector<opt> getopt(int argc, char **argv);
