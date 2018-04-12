@@ -33,7 +33,7 @@ class FixedSizeDescentInc : public FixedSizeDescent<Indiv>
 		while(goon)
 		{
 			goon = false;
-			LocalSearch<Indiv>::m_fn.evaluate(sol);
+			//LocalSearch<Indiv>::m_fn.evaluate(sol);
 
 			Descent<Indiv>::iterate({sol.getScore()});
 			std::random_shuffle(near.begin(),near.end());
@@ -47,7 +47,7 @@ class FixedSizeDescentInc : public FixedSizeDescent<Indiv>
 				{
 					goon = true;
 					sol = tmp;
-					//LocalSearch<Indiv>::m_fn.makeCurrentPrev(near[i]);
+					LocalSearch<Indiv>::m_fn.makeCurrentPrev(near[i]);
 					break;
 				}
 			}

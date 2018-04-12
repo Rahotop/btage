@@ -142,7 +142,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
+				graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-agregate.sh" << std::endl;
 			}
@@ -198,7 +198,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-	graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
+				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
 			}
@@ -324,7 +324,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
+				graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-agregate.sh" << std::endl;
 			}
@@ -379,7 +379,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-	graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
+				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
 			}
@@ -505,7 +505,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-			graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
+				graph.save(run[i].out + "-agregate-graph.jpg", "agretation of fitness of " + std::to_string(run[i].agregatesize) + " runs as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-agregate.sh" << std::endl;
 			}
@@ -560,7 +560,7 @@ int main(int argc, char **argv)
 				settings += "seed : "+std::to_string(run[i].seed)+" ";
 				settings += "version : "+std::to_string(VERSION);
 
-	graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
+				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
 			}
