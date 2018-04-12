@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness","size","avsize"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness","size","avsize"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
