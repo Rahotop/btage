@@ -7,7 +7,7 @@
 #include "solver/all.hpp"
 #include "opt.hpp"
 
-#define VERSION 1
+#define VERSION 2
 
 int main(int argc, char **argv)
 {
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 
 	std::vector<opt> run = getopt(argc, argv);
 
-	std::ofstream gnuplot("gnuplot.sh");
+	std::ofstream gnuplot("gnuplot.sh", std::ios::ate);
 
 	for(unsigned int i(0); i < run.size(); ++i)
 	{
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness"});
+				graph.add(algo, {"fitness","size","avsize"});
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness"});
+				graph.add(algo, {"fitness","size","avsize"});
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";

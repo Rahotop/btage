@@ -17,6 +17,17 @@ class Function
 	}
 
 	virtual float evaluate(Indiv& ind) = 0;
+	virtual float evaluateInc(Indiv& ind, unsigned int bitChanged, unsigned int node = 0)
+	{
+		bitChanged = bitChanged;
+		node = node;
+		return evaluate(ind);
+	}
+
+	virtual void makeCurrentPrev(unsigned int bitChanged)
+	{
+		bitChanged = bitChanged;
+	}
 
 	private:
 

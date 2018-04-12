@@ -66,7 +66,7 @@ class Plot : public Solver<Indiv>
 		m_script << "set output \"" << output << "\"" << std::endl;
 		m_script << "set title \'" << title << "\'" << std::endl;
 		m_script << "set xlabel \'iteration\'" << std::endl;
-		m_script << "set xlabel \'fitness\'" << std::endl;
+		m_script << "set ylabel \'fitness\'" << std::endl;
 		m_script << "set key outside" << std::endl;
 		m_script << "plot ";
 		for(unsigned int i(0); i < m_names.size(); ++i)

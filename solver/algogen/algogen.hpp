@@ -35,7 +35,7 @@ class Algogen : public Solver<Indiv>
 		std::sort(pop.begin(),pop.end());
 
 		Indiv best = pop.back();
-		Solver<Indiv>::iterate({best.getScore()});
+		Solver<Indiv>::iterate({best.getScore(), (float)best.getFunction().size(), 0., 0., 0., 0., 0., 0.});
 
 
 		unsigned int copy = m_nbInd-1;
@@ -45,38 +45,45 @@ class Algogen : public Solver<Indiv>
 		{
 			std::cout << it << "/" << m_itMax << "    \r" << std::flush;
 			copy = m_nbInd-1;
-			std::vector<Indiv> newgen;
+			std::vector<Indiv> newgen(m_nbInd);
 
-			for(unsigned int i(0); i < m_nbInd; ++i)
+			unsigned int avsize = 0;
+			#pragma omp parallel for
+			for(unsigned int i = 0; i < m_nbInd; ++i)
 			{
 				float tmp = distribution(generator);
 				if(tmp < m_pcross)
 				{
-					newgen.push_back(m_gen.crossover(pop));
+					newgen[i] = m_gen.crossover(pop);
 				}
 				else if(tmp < m_pcopy)
 				{
-					newgen.push_back(pop[copy]);
+					newgen[i] = pop[copy];
+					#pragma omp atomic
 					--copy;
 				}
 				else if(tmp < m_pmut)
 				{
-					newgen.push_back(m_gen.mutation(pop));
+					newgen[i] = m_gen.mutation(pop);
 				}
 				else
 				{
-					newgen.push_back(m_gen.generate());
+					newgen[i] = m_gen.generate();
 				}
-			}
-			#pragma omp parallel for
-			for(unsigned int i = 0; i < m_nbInd; ++i)
-			{
 				newgen[i].setScore(Solver<Indiv>::m_fn.evaluate(newgen[i]));
+
+				#pragma omp atomic
+				avsize += newgen[i].getFunction().size();
 			}
 			std::sort(newgen.begin(),newgen.end());
 
 			pop.swap(newgen);
-			Solver<Indiv>::iterate({pop.back().getScore()});
+			Solver<Indiv>::iterate({pop.back().getScore(), (float)pop.back().getFunction().size(), (float)avsize/(float)m_nbInd,
+									(float)pop.back().getFunction().countOP(2),
+									(float)pop.back().getFunction().countOP(3),
+									(float)pop.back().getFunction().countOP(4),
+									(float)pop.back().getFunction().countOP(5),
+									(float)pop.back().getFunction().countOP(6)});
 			if(best < pop.back())
 				best = pop.back();
 		}

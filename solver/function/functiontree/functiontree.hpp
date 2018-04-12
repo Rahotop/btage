@@ -24,6 +24,8 @@ class FunctionTree : public Function<VectorBool>
 	virtual ~FunctionTree();
 
 	float evaluate(VectorBool& s);
+	float evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned int node = 0);
+	void makeCurrentPrev(unsigned int bitChanged);
 
 	unsigned int size() const;
 	unsigned int getNode(unsigned int offset) const;
@@ -37,22 +39,27 @@ class FunctionTree : public Function<VectorBool>
 	void cut(unsigned int node);
 	void mutate(unsigned int node);
 
-	void oui() const;
+	unsigned int countOP(unsigned int op) const;
 
 	private:
 
 	unsigned int construct(unsigned int depth, unsigned int termset, bool full, unsigned int root = 0);
 	unsigned int constructPb(std::vector<unsigned int> depths, const std::vector<unsigned int>& fnset, unsigned int termset, unsigned int root = 0);
 	unsigned int calculSizePb(std::vector<unsigned int> depths, const std::vector<unsigned int>& fnset);
-	float evaluate(VectorBool& s, unsigned int node);
 	unsigned int leaf(unsigned int root);
 	unsigned int newNode();
+	float evaluate(VectorBool& s, unsigned int node);
+	void updateVarIn(unsigned int node = 0);
+	void updateVarInBU(unsigned int node);
 
 	unsigned int m_maxsize;
 	unsigned int *m_op;
 	unsigned int *m_root;
 	unsigned int *m_child1;
 	unsigned int *m_child2;
+	bool *m_isvarin;
+	float *m_preveval;
+	float *m_curreval;
 	float *m_scal;
 	unsigned int *m_bitindex;
 	bool *m_isused;

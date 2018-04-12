@@ -66,7 +66,7 @@ float MaxSat::evaluate(IndFunction& s)
 {
 	GeneratorROOneMax gen(m_n);
 	FunctionTree fn(s.getFunction());
-	FixedSizeDescent<VectorBool> d(fn, gen);
+	FixedSizeDescentInc<VectorBool> d(fn, gen);
 
 	float tmp = 0.;
 	for(unsigned int i(0); i < 10; ++i)

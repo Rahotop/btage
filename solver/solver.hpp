@@ -31,7 +31,7 @@ class Solver
 			if(i == m_save.size())
 			{
 				m_save.push_back(std::list<float>());
-				for(unsigned int j(0); j < m_it; ++i)
+				for(unsigned int j(0); j < m_it; ++j)
 					m_save[i].push_back(0.);
 			}
 			m_save[i].push_back(v[i]);

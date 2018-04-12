@@ -10,6 +10,7 @@
 #include "../../../individual/indfunction/indfunction.hpp"
 #include "../../../generator/generatorro/generatorroonemax/generatorroonemax.hpp"
 #include "../../../localsearch/descent/fixedsizedescent/fixedsizedescent.hpp"
+#include "../../../localsearch/descent/fixedsizedescent/fixedsizedescentinc/fixedsizedescentinc.hpp"
 
 class MaxSat : public Problem<VectorBool>, public Problem<IndFunction>
 {

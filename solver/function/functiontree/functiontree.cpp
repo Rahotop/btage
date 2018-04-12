@@ -10,6 +10,9 @@ FunctionTree::FunctionTree() :
 	m_root(nullptr),
 	m_child1(nullptr),
 	m_child2(nullptr),
+	m_isvarin(nullptr),
+	m_preveval(nullptr),
+	m_curreval(nullptr),
 	m_scal(nullptr),
 	m_bitindex(nullptr),
 	m_isused(nullptr),
@@ -25,6 +28,9 @@ FunctionTree::FunctionTree(const FunctionTree& fn) :
 	m_root(new unsigned int[fn.m_maxsize]),
 	m_child1(new unsigned int[fn.m_maxsize]),
 	m_child2(new unsigned int[fn.m_maxsize]),
+	m_isvarin(new bool[fn.m_maxsize*fn.m_n]),
+	m_preveval(new float[fn.m_maxsize]),
+	m_curreval(new float[fn.m_maxsize]),
 	m_scal(new float[fn.m_maxsize]),
 	m_bitindex(new unsigned int[fn.m_maxsize]),
 	m_isused(new bool[fn.m_maxsize]),
@@ -32,14 +38,11 @@ FunctionTree::FunctionTree(const FunctionTree& fn) :
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
-		m_op[i] = fn.m_op[i];
-		m_root[i] = fn.m_root[i];
-		m_child1[i] = fn.m_child1[i];
-		m_child2[i] = fn.m_child2[i];
-		m_scal[i] = fn.m_scal[i];
-		m_bitindex[i] = fn.m_bitindex[i];
-		m_isused[i] = fn.m_isused[i];
+		m_isused[i] = false;
 	}
+
+	copy(fn,0);
+	updateVarIn();
 }
 
 FunctionTree::FunctionTree(const FunctionTree& fn, unsigned int node) :
@@ -49,6 +52,9 @@ FunctionTree::FunctionTree(const FunctionTree& fn, unsigned int node) :
 	m_root(new unsigned int[fn.m_maxsize]),
 	m_child1(new unsigned int[fn.m_maxsize]),
 	m_child2(new unsigned int[fn.m_maxsize]),
+	m_isvarin(new bool[fn.m_maxsize*fn.m_n]),
+	m_preveval(new float[fn.m_maxsize]),
+	m_curreval(new float[fn.m_maxsize]),
 	m_scal(new float[fn.m_maxsize]),
 	m_bitindex(new unsigned int[fn.m_maxsize]),
 	m_isused(new bool[fn.m_maxsize]),
@@ -60,6 +66,7 @@ FunctionTree::FunctionTree(const FunctionTree& fn, unsigned int node) :
 	}
 
 	copy(fn,node);
+	updateVarIn();
 }
 
 FunctionTree::FunctionTree(unsigned int maxsize, unsigned int depth, unsigned int termset, bool full) :
@@ -69,6 +76,9 @@ FunctionTree::FunctionTree(unsigned int maxsize, unsigned int depth, unsigned in
 	m_root(new unsigned int[maxsize]),
 	m_child1(new unsigned int[maxsize]),
 	m_child2(new unsigned int[maxsize]),
+	m_isvarin(new bool[maxsize*termset]),
+	m_preveval(new float[maxsize]),
+	m_curreval(new float[maxsize]),
 	m_scal(new float[maxsize]),
 	m_bitindex(new unsigned int[maxsize]),
 	m_isused(new bool[m_maxsize]),
@@ -79,6 +89,7 @@ FunctionTree::FunctionTree(unsigned int maxsize, unsigned int depth, unsigned in
 		m_isused[i] = false;
 	}
 	construct(depth,termset,full);
+	updateVarIn();
 }
 
 FunctionTree::FunctionTree(std::vector<unsigned int> depths, const std::vector<unsigned int>& fnset, unsigned int termset) :
@@ -88,6 +99,9 @@ FunctionTree::FunctionTree(std::vector<unsigned int> depths, const std::vector<u
 	m_root(new unsigned int[m_maxsize]),
 	m_child1(new unsigned int[m_maxsize]),
 	m_child2(new unsigned int[m_maxsize]),
+	m_isvarin(new bool[m_maxsize*termset]),
+	m_preveval(new float[m_maxsize]),
+	m_curreval(new float[m_maxsize]),
 	m_scal(new float[m_maxsize]),
 	m_bitindex(new unsigned int[m_maxsize]),
 	m_isused(new bool[m_maxsize]),
@@ -98,6 +112,7 @@ FunctionTree::FunctionTree(std::vector<unsigned int> depths, const std::vector<u
 		m_isused[i] = false;
 	}
 	constructPb(depths,fnset,termset);
+	updateVarIn();
 }
 
 FunctionTree::~FunctionTree()
@@ -110,6 +125,12 @@ FunctionTree::~FunctionTree()
 		delete[] m_child1;
 	if(m_child2)
 		delete[] m_child2;
+	if(m_isvarin)
+		delete[] m_isvarin;
+	if(m_preveval)
+		delete[] m_preveval;
+	if(m_curreval)
+		delete[] m_curreval;
 	if(m_scal)
 		delete[] m_scal;
 	if(m_bitindex)
@@ -130,6 +151,12 @@ FunctionTree& FunctionTree::operator=(const FunctionTree& f)
 			delete[] m_child1;
 		if(m_child2)
 			delete[] m_child2;
+		if(m_isvarin)
+			delete[] m_isvarin;
+		if(m_preveval)
+			delete[] m_preveval;
+		if(m_curreval)
+			delete[] m_curreval;
 		if(m_scal)
 			delete[] m_scal;
 		if(m_bitindex)
@@ -138,10 +165,14 @@ FunctionTree& FunctionTree::operator=(const FunctionTree& f)
 			delete[] m_isused;
 
 		m_maxsize = f.m_maxsize;
+		m_n = f.m_n;
 		m_op = new unsigned int[m_maxsize];
 		m_root = new unsigned int[m_maxsize];
 		m_child1 = new unsigned int[m_maxsize];
 		m_child2 = new unsigned int[m_maxsize];
+		m_isvarin = new bool[m_maxsize*m_n];
+		m_preveval = new float[m_maxsize];
+		m_curreval = new float[m_maxsize];
 		m_scal = new float[m_maxsize];
 		m_bitindex = new unsigned int[m_maxsize];
 		m_isused = new bool[m_maxsize];
@@ -149,14 +180,11 @@ FunctionTree& FunctionTree::operator=(const FunctionTree& f)
 
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
-		m_op[i] = f.m_op[i];
-		m_root[i] = f.m_root[i];
-		m_child1[i] = f.m_child1[i];
-		m_child2[i] = f.m_child2[i];
-		m_scal[i] = f.m_scal[i];
-		m_bitindex[i] = f.m_bitindex[i];
-		m_isused[i] = f.m_isused[i];
+		m_isused[i] = false;
 	}
+
+	copy(f,0);
+	updateVarIn();
 
 	return *this;
 }
@@ -192,14 +220,24 @@ void FunctionTree::replace(unsigned int node, const FunctionTree& f)
 		erase(node);
 
 		if(m_child1[root] == node)
+		{
 			m_child1[root] = copy(f,0,root);
+			updateVarIn(m_child1[root]);
+		}
 		else
+		{
 			m_child2[root] = copy(f,0,root);
+			updateVarIn(m_child2[root]);
+		}
+
+		updateVarInBU(root);
 	}
 	else
 	{
 		erase(0);
 		copy(f,0);
+
+		updateVarIn();
 	}
 }
 
@@ -210,9 +248,17 @@ void FunctionTree::cut(unsigned int node)
 		unsigned int root = m_root[node];
 		erase(node);
 		if(m_child1[root] == node)
+		{
 			m_child1[root] = leaf(root);
+			updateVarIn(m_child1[root]);
+		}
 		else
+		{
 			m_child2[root] = leaf(root);
+			updateVarIn(m_child2[root]);
+		}
+
+		updateVarInBU(root);
 	}
 	else
 	{
@@ -225,6 +271,8 @@ void FunctionTree::cut(unsigned int node)
 		m_bitindex[tmp] = rand()%m_n;
 		m_child1[tmp] = 0;
 		m_child2[tmp] = 0;
+
+		updateVarIn();
 	}
 }
 
@@ -234,6 +282,8 @@ void FunctionTree::mutate(unsigned int node)
 	{
 		m_op[node] = rand()%2;
 		m_bitindex[node] = rand()%m_n;
+
+		updateVarInBU(node);
 	}
 	else if(m_op[node] == 2)
 	{
@@ -386,6 +436,9 @@ float FunctionTree::evaluate(VectorBool& s, unsigned int node)
 	else if(m_op[node] == 6)
 		tmp = evaluate(s,m_child1[node]) + evaluate(s,m_child2[node]);
 
+	m_curreval[node] = tmp;
+	m_preveval[node] = tmp;
+
 	return tmp;
 }
 
@@ -394,8 +447,7 @@ unsigned int FunctionTree::size() const
 	unsigned int tmp = 0;
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
-		if(m_isused[i])
-			++tmp;
+		tmp += m_isused[i];
 	}
 	return tmp;
 }
@@ -451,14 +503,145 @@ void FunctionTree::show(std::ostream& o, unsigned int depth, unsigned int node) 
 		show(o, depth+1, m_child2[node]);
 }
 
-void FunctionTree::oui() const
+void FunctionTree::updateVarIn(unsigned int node)
 {
-	std::cout << m_maxsize << std::endl;
-	for(unsigned int i(0); i < m_maxsize; ++i)
+	if(m_op[node] < 2)
 	{
-		std::cout << "used[" << i << "] = " << m_isused[i] << std::endl;
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			m_isvarin[i*m_maxsize+node] = false;
+		}
+		m_isvarin[m_bitindex[node]*m_maxsize+node] = true;
+	}
+	else if(m_op[node] < 3)
+	{
+		updateVarIn(m_child1[node]);
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			m_isvarin[i*m_maxsize+node] = m_isvarin[i*m_maxsize+m_child1[node]];
+		}
+	}
+	else
+	{
+		updateVarIn(m_child1[node]);
+		updateVarIn(m_child2[node]);
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			m_isvarin[i*m_maxsize+node] = m_isvarin[i*m_maxsize+m_child1[node]] || m_isvarin[i*m_maxsize+m_child2[node]];
+		}
 	}
 }
+
+void FunctionTree::updateVarInBU(unsigned int node)
+{
+	bool tmp = false;
+
+	if(m_op[node] < 2)
+	{
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			m_isvarin[i*m_maxsize+node] = false;
+		}
+		m_isvarin[m_bitindex[node]*m_maxsize+node] = true;
+		tmp = true;
+	}
+	else if(m_op[node] < 3)
+	{
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			if(m_isvarin[i*m_maxsize+node] != m_isvarin[i*m_maxsize+m_child1[node]])
+			{
+				m_isvarin[i*m_maxsize+node] = !m_isvarin[i*m_maxsize+node];
+				tmp = true;
+			}
+		}
+	}
+	else
+	{
+		for(unsigned int i(0); i < m_n; ++i)
+		{
+			if(m_isvarin[i*m_maxsize+node] != (m_isvarin[i*m_maxsize+m_child1[node]] || m_isvarin[i*m_maxsize+m_child2[node]]))
+			{
+				m_isvarin[i*m_maxsize+node] = !m_isvarin[i*m_maxsize+node];
+				tmp = true;
+			}
+		}
+	}
+
+	if(tmp && node)
+	{
+		updateVarInBU(m_root[node]);
+	}
+}
+
+void FunctionTree::makeCurrentPrev(unsigned int bitChanged)
+{
+	for(unsigned int i(0); i < m_maxsize; ++i)
+	{
+		m_preveval[i] = (m_isvarin[bitChanged*m_maxsize+i]) ? m_curreval[i] : m_preveval[i];
+	}
+}
+
+float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned int node)
+{
+	float tmp = 0;
+
+	if(m_op[node] == 0)
+	{
+		tmp = s[m_bitindex[node]];
+	}
+	else if(m_op[node] == 1)
+	{
+		tmp = !s[m_bitindex[node]];
+	}
+	else if(m_op[node] == 2)
+	{
+		tmp = m_scal[node]*evaluateInc(s,bitChanged,m_child1[node]);
+	}
+	else if(m_op[node] == 3)
+	{
+		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
+		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
+
+		tmp = c1 == c2;
+	}
+	else if(m_op[node] == 4)
+	{
+		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
+		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
+
+		tmp = std::max(c1, c2);
+	}
+	else if(m_op[node] == 5)
+	{
+		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
+		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
+		
+		tmp = std::min(c1, c2);
+	}
+	else if(m_op[node] == 6)
+	{
+		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
+		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
+		
+		tmp = c1 + c2;
+	}
+
+	m_curreval[node] = tmp;
+
+	return tmp;
+}
+
+unsigned int FunctionTree::countOP(unsigned int op) const
+{
+	unsigned int tmp = 0;
+	for(unsigned int i(0); i < m_maxsize; ++i)
+	{
+		tmp += m_isused[i] && (m_op[i] == op);
+	}
+	return tmp;
+}
+
 
 
 
