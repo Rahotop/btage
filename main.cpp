@@ -7,7 +7,7 @@
 #include "solver/all.hpp"
 #include "opt.hpp"
 
-#define VERSION 2
+#define VERSION 3
 
 int main(int argc, char **argv)
 {
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -201,6 +201,59 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
+			}
+
+			if(run[i].links)
+			{
+				std::ofstream out((run[i].out + "-links.dat").c_str());
+
+				s.getFunction().varLinks(out);
+				out << std::endl;
+				s.getFunction().show(out);
+			}
+
+			if(run[i].correlation)
+			{
+				std::ofstream out1((run[i].out + "-correlation1.dat").c_str());
+				std::ofstream out2((run[i].out + "-correlation2.dat").c_str());
+				std::ofstream out3((run[i].out + "-correlation3.dat").c_str());
+				std::ofstream plot((run[i].out + "-gnuplot-correlation.sh").c_str());
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set output \"" << run[i].out << "-correlation-graph.jpg" << "\"" << std::endl;
+				plot << "set title \'Correlation between F-ound and F-obj\'" << std::endl;
+				plot << "set xlabel \'F-ound\'" << std::endl;
+				plot << "set ylabel \'F-obj\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "plot \"" << run[i].out << "-correlation1.dat\" using 1:2 with points title \'random\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation2.dat\" using 1:2 with points title \'LS on F-obj\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation3.dat\" using 1:2 with points title \'LS on F-ound\'";
+
+				GeneratorROOneMax genom(run[i].n);
+
+				for(unsigned int i(0); i < 10000; ++i)
+				{
+					auto tmp = genom.generate();
+					out1 << s.getFunction().evaluate(tmp) << " " << ((FunctionTree)pb).evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(pb, genom);
+					auto tmp = ls.solve();
+
+					out2 << s.getFunction().evaluate(tmp) << " " << ((FunctionTree)pb).evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(s.getFunction(), genom);
+					auto tmp = ls.solve();
+
+					out3 << s.getFunction().evaluate(tmp) << " " << ((FunctionTree)pb).evaluate(tmp) << std::endl;
+				}
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
 			}
 		}
 
@@ -264,7 +317,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -354,7 +407,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -382,6 +435,59 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
+			}
+
+			if(run[i].links)
+			{
+				std::ofstream out((run[i].out + "-links.dat").c_str());
+
+				s.getFunction().varLinks(out);
+				out << std::endl;
+				s.getFunction().show(out);
+			}
+
+			if(run[i].correlation)
+			{
+				std::ofstream out1((run[i].out + "-correlation1.dat").c_str());
+				std::ofstream out2((run[i].out + "-correlation2.dat").c_str());
+				std::ofstream out3((run[i].out + "-correlation3.dat").c_str());
+				std::ofstream plot((run[i].out + "-gnuplot-correlation.sh").c_str());
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set output \"" << run[i].out << "-correlation-graph.jpg" << "\"" << std::endl;
+				plot << "set title \'Correlation between F-ound and F-obj\'" << std::endl;
+				plot << "set xlabel \'F-ound\'" << std::endl;
+				plot << "set ylabel \'F-obj\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "plot \"" << run[i].out << "-correlation1.dat\" using 1:2 with points title \'random\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation2.dat\" using 1:2 with points title \'LS on F-obj\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation3.dat\" using 1:2 with points title \'LS on F-ound\'";
+
+				GeneratorROOneMax genom(pb.getN());
+
+				for(unsigned int i(0); i < 10000; ++i)
+				{
+					auto tmp = genom.generate();
+					out1 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(pb, genom);
+					auto tmp = ls.solve();
+
+					out2 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(s.getFunction(), genom);
+					auto tmp = ls.solve();
+
+					out3 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
 			}
 		}
 
@@ -563,6 +669,59 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-Rmean-graph.jpg", "mean fitness over " + std::to_string(run[i].Rmeansize) + " runs as a function of iterations in the F-ound space "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-Rmean.sh" << std::endl;
+			}
+
+			if(run[i].links)
+			{
+				std::ofstream out((run[i].out + "-links.dat").c_str());
+
+				s.getFunction().varLinks(out);
+				out << std::endl;
+				s.getFunction().show(out);
+			}
+
+			if(run[i].correlation)
+			{
+				std::ofstream out1((run[i].out + "-correlation1.dat").c_str());
+				std::ofstream out2((run[i].out + "-correlation2.dat").c_str());
+				std::ofstream out3((run[i].out + "-correlation3.dat").c_str());
+				std::ofstream plot((run[i].out + "-gnuplot-correlation.sh").c_str());
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set output \"" << run[i].out << "-correlation-graph.jpg" << "\"" << std::endl;
+				plot << "set title \'Correlation between F-ound and F-obj\'" << std::endl;
+				plot << "set xlabel \'F-ound\'" << std::endl;
+				plot << "set ylabel \'F-obj\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "plot \"" << run[i].out << "-correlation1.dat\" using 1:2 with points title \'random\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation2.dat\" using 1:2 with points title \'LS on F-obj\',\\" << std::endl;
+				plot << "\"" << run[i].out << "-correlation3.dat\" using 1:2 with points title \'LS on F-ound\'";
+
+				GeneratorROOneMax genom(pb.getN());
+
+				for(unsigned int i(0); i < 10000; ++i)
+				{
+					auto tmp = genom.generate();
+					out1 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(pb, genom);
+					auto tmp = ls.solve();
+
+					out2 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				for(unsigned int i(0); i < 1000; ++i)
+				{
+					FixedSizeDescent<VectorBool> ls(s.getFunction(), genom);
+					auto tmp = ls.solve();
+
+					out3 << s.getFunction().evaluate(tmp) << " " << pb.evaluate(tmp) << std::endl;
+				}
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
 			}
 		}
 	}

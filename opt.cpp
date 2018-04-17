@@ -101,6 +101,16 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().Rmeansize = std::stoi(args[i+1]);
 			i += 2;
 		}
+		else if(args[i] == "-links")
+		{
+			tmp.back().links = true;
+			++i;
+		}
+		else if(args[i] == "-correlation")
+		{
+			tmp.back().correlation = true;
+			++i;
+		}
 		else if(args[i] == "-out")
 		{
 			tmp.back().out = args[i+1];

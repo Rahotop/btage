@@ -422,19 +422,42 @@ float FunctionTree::evaluate(VectorBool& s, unsigned int node)
 {
 	float tmp = 0;
 	if(m_op[node] == 0)
+	{
 		tmp = s[m_bitindex[node]];
+	}
 	else if(m_op[node] == 1)
+	{
 		tmp = !s[m_bitindex[node]];
+	}
 	else if(m_op[node] == 2)
+	{
 		tmp = m_scal[node]*evaluate(s,m_child1[node]);
+	}
 	else if(m_op[node] == 3)
-		tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
+	{
+		float c1 = evaluate(s,m_child1[node]);
+		float c2 = evaluate(s,m_child2[node]);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
+		//tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
+	}
 	else if(m_op[node] == 4)
-		tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+	{
+		float c1 = evaluate(s,m_child1[node]);
+		float c2 = evaluate(s,m_child2[node]);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
+		//tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+	}
 	else if(m_op[node] == 5)
-		tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+	{
+		float c1 = evaluate(s,m_child1[node]);
+		float c2 = evaluate(s,m_child2[node]);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
+		//tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+	}
 	else if(m_op[node] == 6)
+	{
 		tmp = evaluate(s,m_child1[node]) + evaluate(s,m_child2[node]);
+	}
 
 	m_curreval[node] = tmp;
 	m_preveval[node] = tmp;
@@ -603,21 +626,24 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		tmp = c1 == c2;
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
+		//tmp = c1 == c2;
 	}
 	else if(m_op[node] == 4)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		tmp = std::max(c1, c2);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
+		//tmp = std::max(c1, c2);
 	}
 	else if(m_op[node] == 5)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 		
-		tmp = std::min(c1, c2);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
+		//tmp = std::min(c1, c2);
 	}
 	else if(m_op[node] == 6)
 	{
@@ -639,6 +665,107 @@ unsigned int FunctionTree::countOP(unsigned int op) const
 	{
 		tmp += m_isused[i] && (m_op[i] == op);
 	}
+	return tmp;
+}
+
+void FunctionTree::varLinks(std::ostream& o) const
+{
+	auto links = getLinks();
+
+	unsigned int *tab = new unsigned int[m_n*m_n];
+	for(unsigned int i(0); i < m_n*m_n; ++i) tab[i] = 0;
+
+	for(unsigned int i(0); i < links.size(); ++i)
+	{
+		for(unsigned int j(0); j < links[i].size(); ++j)
+		{
+			for(unsigned int k(j+1); k < links[i].size(); ++k)
+			{
+				++tab[links[i][j]*m_n+links[i][k]];
+				++tab[links[i][k]*m_n+links[i][j]];
+			}
+		}
+	}
+
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		for(unsigned int j(0); j < m_n; ++j)
+		{
+			if(tab[i*m_n+j])
+				o << std::setw(3) << tab[i*m_n+j];
+			else if(i == j)
+				o << "  |";
+			else
+				o << "  .";
+		}
+		o << std::endl;
+	}
+
+	delete[] tab;
+}
+
+bool FunctionTree::isOPinSubTree(unsigned int op, unsigned int node) const
+{
+	if(m_op[node] == op)
+		return true;
+	else if(m_op[node] < 2)
+		return false;
+	else if(m_op[node] == 2)
+		return isOPinSubTree(op, m_child1[node]);
+	return isOPinSubTree(op, m_child1[node]) || isOPinSubTree(op, m_child2[node]);
+}
+
+std::vector<unsigned int> FunctionTree::getVar(unsigned int node) const
+{
+	std::vector<unsigned int> tmp;
+
+	if(m_op[node] < 2)
+	{
+		tmp.push_back(m_bitindex[node]);
+	}
+	else if(m_op[node] == 2)
+	{
+		tmp = getVar(m_child1[node]);
+	}
+	else
+	{
+		tmp = getVar(m_child1[node]);
+
+		std::vector<unsigned int> tmp2 = getVar(m_child2[node]);
+
+		for(unsigned int i(0); i < tmp2.size(); ++i)
+		{
+			tmp.push_back(tmp2[i]);
+		}
+	}
+
+	return tmp;
+}
+
+std::vector<std::vector<unsigned int>> FunctionTree::getLinks(unsigned int node) const
+{
+	std::vector<std::vector<unsigned int>> tmp;
+
+	if(!isOPinSubTree(6, node))
+	{
+		tmp.push_back(getVar(node));
+	}
+	else if(m_op[node] == 2)
+	{
+		tmp = getLinks(m_child1[node]);
+	}
+	else
+	{
+		tmp = getLinks(m_child1[node]);
+
+		std::vector<std::vector<unsigned int>> tmp2 = getLinks(m_child2[node]);
+
+		for(unsigned int i(0); i < tmp2.size(); ++i)
+		{
+			tmp.push_back(tmp2[i]);
+		}
+	}
+
 	return tmp;
 }
 

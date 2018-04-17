@@ -1,6 +1,7 @@
 #ifndef INDFUNCTION_HPP_INCLUDED
 #define INDFUNCTION_HPP_INCLUDED
 
+#include <vector>
 #include "../individual.hpp"
 #include "../../function/functiontree/functiontree.hpp"
 
@@ -20,6 +21,7 @@ class IndFunction : public Individual
 	private:
 
 	FunctionTree m_tree;
+	std::vector<float> m_score;
 };
 
 #endif

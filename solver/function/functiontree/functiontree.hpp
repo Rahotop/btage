@@ -1,6 +1,7 @@
 #ifndef FUNCTIONTREE_HPP_INCLUDED
 #define FUNCTIONTREE_HPP_INCLUDED
 
+#include <iomanip>
 #include <unordered_set>
 #include <random>
 #include <iostream>
@@ -40,6 +41,7 @@ class FunctionTree : public Function<VectorBool>
 	void mutate(unsigned int node);
 
 	unsigned int countOP(unsigned int op) const;
+	void varLinks(std::ostream& o) const;
 
 	private:
 
@@ -51,6 +53,9 @@ class FunctionTree : public Function<VectorBool>
 	float evaluate(VectorBool& s, unsigned int node);
 	void updateVarIn(unsigned int node = 0);
 	void updateVarInBU(unsigned int node);
+	bool isOPinSubTree(unsigned int op, unsigned int node) const;
+	std::vector<unsigned int> getVar(unsigned int node) const;
+	std::vector<std::vector<unsigned int>> getLinks(unsigned int node = 0) const;
 
 	unsigned int m_maxsize;
 	unsigned int *m_op;
