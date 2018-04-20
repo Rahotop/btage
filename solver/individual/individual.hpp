@@ -9,8 +9,8 @@ class Individual
 	Individual(const Individual& ind);
 	virtual ~Individual() = 0;
 
-	float getScore() const;
-	void setScore(float score);
+	virtual float getScore() const;
+	virtual void setScore(float score);
 
 	Individual& operator=(const Individual& ind);
 	bool operator<(const Individual& ind) const;

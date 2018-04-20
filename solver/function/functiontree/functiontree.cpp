@@ -41,6 +41,11 @@ FunctionTree::FunctionTree(const FunctionTree& fn) :
 		m_isused[i] = false;
 	}
 
+	for(unsigned int i(0); i < m_maxsize*m_n; ++i)
+	{
+		m_isvarin[i] = false;
+	}
+
 	copy(fn,0);
 	updateVarIn();
 }
@@ -63,6 +68,11 @@ FunctionTree::FunctionTree(const FunctionTree& fn, unsigned int node) :
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
 		m_isused[i] = false;
+	}
+
+	for(unsigned int i(0); i < m_maxsize*m_n; ++i)
+	{
+		m_isvarin[i] = false;
 	}
 
 	copy(fn,node);
@@ -88,6 +98,12 @@ FunctionTree::FunctionTree(unsigned int maxsize, unsigned int depth, unsigned in
 	{
 		m_isused[i] = false;
 	}
+
+	for(unsigned int i(0); i < m_maxsize*m_n; ++i)
+	{
+		m_isvarin[i] = false;
+	}
+
 	construct(depth,termset,full);
 	updateVarIn();
 }
@@ -111,6 +127,12 @@ FunctionTree::FunctionTree(std::vector<unsigned int> depths, const std::vector<u
 	{
 		m_isused[i] = false;
 	}
+
+	for(unsigned int i(0); i < m_maxsize*m_n; ++i)
+	{
+		m_isvarin[i] = false;
+	}
+
 	constructPb(depths,fnset,termset);
 	updateVarIn();
 }
@@ -181,6 +203,11 @@ FunctionTree& FunctionTree::operator=(const FunctionTree& f)
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
 		m_isused[i] = false;
+	}
+
+	for(unsigned int i(0); i < m_maxsize*m_n; ++i)
+	{
+		m_isvarin[i] = false;
 	}
 
 	copy(f,0);
@@ -318,10 +345,22 @@ unsigned int FunctionTree::copy(const FunctionTree& f, unsigned int fnode, unsig
 	m_scal[node] = f.m_scal[fnode];
 	m_bitindex[node] = f.m_bitindex[fnode];
 
-	if(m_op[node] > 1)
+	if(m_op[node] == 2)
+	{
+		//m_child1[node] = copy(f, f.m_child1[fnode], node);
+		unsigned int child = f.m_child1[fnode];
+		while(f.m_op[child] == 2)
+		{
+			m_scal[node] *= f.m_scal[child];
+			child = f.m_child1[child];
+		}
+		m_child1[node] = copy(f, child, node);
+	}
+	else if(m_op[node] > 2)
+	{
 		m_child1[node] = copy(f, f.m_child1[fnode], node);
-	if(m_op[node] > 2)
 		m_child2[node] = copy(f, f.m_child2[fnode], node);
+	}
 
 	return node;
 }
@@ -661,9 +700,26 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 unsigned int FunctionTree::countOP(unsigned int op) const
 {
 	unsigned int tmp = 0;
-	for(unsigned int i(0); i < m_maxsize; ++i)
+	if(op < 3)
 	{
-		tmp += m_isused[i] && (m_op[i] == op);
+		for(unsigned int i(0); i < m_maxsize; ++i)
+		{
+			tmp += m_isused[i] && (m_op[i] == op);
+		}
+	}
+	else if(op > 5)
+	{
+		for(unsigned int i(0); i < m_maxsize; ++i)
+		{
+			tmp += m_isused[i] && (m_op[i] > 2) && isOPinSubTree(6,i);
+		}
+	}
+	else
+	{
+		for(unsigned int i(0); i < m_maxsize; ++i)
+		{
+			tmp += m_isused[i] && (m_op[i] == op) && !isOPinSubTree(6,i);
+		}
 	}
 	return tmp;
 }
@@ -700,6 +756,26 @@ void FunctionTree::varLinks(std::ostream& o) const
 		}
 		o << std::endl;
 	}
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		unsigned int tmp = 0;
+		for(unsigned int j(0); j < m_maxsize; ++j)
+		{
+			tmp += (m_isused[j]) && (m_op[j] == 0) && (m_bitindex[j] == i);
+		}
+		o << std::setw(3) << tmp;
+	}
+	o << std::endl;
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		unsigned int tmp = 0;
+		for(unsigned int j(0); j < m_maxsize; ++j)
+		{
+			tmp += (m_isused[j]) && (m_op[j] == 1) && (m_bitindex[j] == i);
+		}
+		o << std::setw(3) << tmp;
+	}
+	o << std::endl;
 
 	delete[] tab;
 }

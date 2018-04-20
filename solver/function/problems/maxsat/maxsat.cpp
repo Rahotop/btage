@@ -83,3 +83,39 @@ unsigned int MaxSat::getN() const
 	return m_n;
 }
 
+void MaxSat::varLinks(std::ostream& o) const
+{
+	unsigned int *tab = new unsigned int[m_n*m_n];
+	for(unsigned int i(0); i < m_n*m_n; ++i) tab[i] = 0;
+
+	for(unsigned int i(0); i < m_nbclauses; ++i)
+	{
+		for(unsigned int j(0); j < m_clauses[i].size(); ++j)
+		{
+			for(unsigned int k(j+1); k < m_clauses[i].size(); ++k)
+			{
+				++tab[(abs(m_clauses[i][j])-1)*m_n+(abs(m_clauses[i][k])-1)];
+				++tab[(abs(m_clauses[i][k])-1)*m_n+(abs(m_clauses[i][j])-1)];			
+			}
+		}
+	}
+	
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		for(unsigned int j(0); j < m_n; ++j)
+		{
+			if(tab[i*m_n+j])
+				o << std::setw(3) << tab[i*m_n+j];
+			else if(i == j)
+				o << "  |";
+			else
+				o << "  .";
+		}
+		o << std::endl;
+	}
+
+	delete[] tab;
+}
+
+
+

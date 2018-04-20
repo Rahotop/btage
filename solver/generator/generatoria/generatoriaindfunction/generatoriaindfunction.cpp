@@ -41,6 +41,7 @@ IndFunction GeneratorIAIndFunction::crossover(const std::vector<IndFunction>& po
 
 
 	tmp1.getFunction().replace(tmp1.getFunction().getNode(rand()%tmp1.getFunction().size()), toadd);
+	tmp1.resetScore();
 
 	return tmp1;
 }
@@ -65,6 +66,7 @@ IndFunction GeneratorIAIndFunction::subtreeMutation(const std::vector<IndFunctio
 	}
 
 	tmp.getFunction().replace(tmp.getFunction().getNode(rand()%tmp.getFunction().size()), toadd.getFunction());
+	tmp.resetScore();
 
 	return tmp;
 }
@@ -74,6 +76,7 @@ IndFunction GeneratorIAIndFunction::pointMutation(const std::vector<IndFunction>
 	IndFunction tmp(pop[rand()%pop.size()]);
 
 	tmp.getFunction().mutate(tmp.getFunction().getNode(rand()%tmp.getFunction().size()));
+	tmp.resetScore();
 
 	return tmp;
 }

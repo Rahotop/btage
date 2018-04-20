@@ -2,5 +2,8 @@
 #include "descent/descent.hpp"
 #include "descent/fixedsizedescent/fixedsizedescent.hpp"
 #include "descent/fixedsizedescent/fixedsizedescentcomp/fixedsizedescentcomp.hpp"
+#include "descent/fixedsizedescent/fixedsizedescentcorr/fixedsizedescentcorr.hpp"
+#include "descent/fixedsizedescent/fixedsizedescentinc/fixedsizedescentinc.hpp"
+#include "descent/fixedsizedescent/fixedsizedescentdist/fixedsizedescentdist.hpp"
 #include "ils/ils.hpp"
 #include "ils/fixedsizeils/fixedsizeils.hpp"

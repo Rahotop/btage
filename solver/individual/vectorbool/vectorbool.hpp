@@ -17,6 +17,7 @@ class VectorBool : public Individual
 	unsigned int size() const;
 
 	VectorBool& operator=(const VectorBool& v);
+	unsigned int dist(const VectorBool& v) const;
 
 	private:
 

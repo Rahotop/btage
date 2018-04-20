@@ -38,3 +38,17 @@ VectorBool& VectorBool::operator=(const VectorBool& v)
 	return *this;
 }
 
+unsigned int VectorBool::dist(const VectorBool& v) const
+{
+	unsigned int tmp = 0;
+	for(unsigned int i(0); i < m_ind.size(); ++i)
+	{
+		tmp += m_ind[i] != v.m_ind[i];
+	}
+	return tmp;
+}
+
+
+
+
+

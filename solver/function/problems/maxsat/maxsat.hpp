@@ -1,6 +1,7 @@
 #ifndef MAXSAT_HPP_INCLUDED
 #define MAXSAT_HPP_INCLUDED
 
+#include <sstream>
 #include <cstdlib>
 #include <string>
 #include <fstream>
@@ -23,6 +24,7 @@ class MaxSat : public Problem<VectorBool>, public Problem<IndFunction>
 	float evaluate(IndFunction& s);
 
 	unsigned int getN() const;
+	void varLinks(std::ostream& o) const;
 
 	private:
 

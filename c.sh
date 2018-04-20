@@ -24,7 +24,9 @@ g++ -Wall -Wextra -pedantic -std=c++11 -O3 \
 	solver/localsearch/descent/*.cpp \
 	solver/localsearch/descent/fixedsizedescent/*.cpp \
 	solver/localsearch/descent/fixedsizedescent/fixedsizedescentcomp/*.cpp \
+	solver/localsearch/descent/fixedsizedescent/fixedsizedescentcorr/*.cpp \
 	solver/localsearch/descent/fixedsizedescent/fixedsizedescentinc/*.cpp \
+	solver/localsearch/descent/fixedsizedescent/fixedsizedescentdist/*.cpp \
 	solver/localsearch/ils/*.cpp \
 	solver/localsearch/ils/fixedsizeils/*.cpp \
 	-fopenmp

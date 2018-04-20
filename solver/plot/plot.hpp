@@ -11,12 +11,12 @@ class Plot : public Solver<Indiv>
 {
 	public:
 
-	Plot(Function<Indiv>& fn) : Solver<Indiv>(fn), m_data(), m_script(), m_names(), m_path()
+	Plot(Function<Indiv>& fn) : Solver<Indiv>(fn), m_data(), m_script(), m_names(), m_end(), m_path()
 	{
 
 	}
 
-	Plot(Function<Indiv>& fn, const std::string& pathdata, const std::string& pathscript) : Solver<Indiv>(fn), m_data(pathdata.c_str()), m_script(pathscript.c_str()), m_names(), m_path(pathdata)
+	Plot(Function<Indiv>& fn, const std::string& pathdata, const std::string& pathscript) : Solver<Indiv>(fn), m_data(pathdata.c_str()), m_script(pathscript.c_str()), m_names(), m_end(), m_path(pathdata)
 	{
 
 	}
@@ -32,12 +32,16 @@ class Plot : public Solver<Indiv>
 	}
 
 	template<class Indiv2>
-	void add(const Solver<Indiv2>& s, const std::vector<std::string>& names)
+	void add(const Solver<Indiv2>& s, const std::vector<std::string>& names, const std::vector<std::string>& end)
 	{
 		Solver<Indiv>::addLine(s);
 		for(unsigned int i(0); i < names.size(); ++i)
 		{
 			m_names.push_back(names[i]);
+		}
+		for(unsigned int i(0); i < end.size(); ++i)
+		{
+			m_end.push_back(end[i]);
 		}
 	}
 
@@ -49,12 +53,17 @@ class Plot : public Solver<Indiv>
 		{
 			m_names.push_back(s.m_names[i]);
 		}
+		for(unsigned int i(0); i < s.m_end.size(); ++i)
+		{
+			m_end.push_back(s.m_end[i]);
+		}
 	}
 
-	void add(float c, const std::string& name)
+	void add(float c, const std::string& name, const std::string& end)
 	{
 		Solver<Indiv>::addConst(c);
 		m_names.push_back(name);
+		m_end.push_back(end);
 	}
 
 	void save(const std::string& output, const std::string& title)
@@ -71,7 +80,7 @@ class Plot : public Solver<Indiv>
 		m_script << "plot ";
 		for(unsigned int i(0); i < m_names.size(); ++i)
 		{
-			m_script << "\"" << m_path << "\" using 1:" << 2+i << " with lines title \'" << m_names[i] << "\'";
+			m_script << "\"" << m_path << "\" using 1:" << 2+i << " with lines " << m_end[i] << " title \'" << m_names[i] << "\'";
 			if(i < m_names.size()-1)
 				m_script << ",\\";
 			m_script << std::endl;
@@ -84,6 +93,7 @@ class Plot : public Solver<Indiv>
 	std::ofstream m_script;
 
 	std::vector<std::string> m_names;
+	std::vector<std::string> m_end;
 	std::string m_path;
 };
 

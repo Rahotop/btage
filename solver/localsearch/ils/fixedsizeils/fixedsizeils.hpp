@@ -34,6 +34,8 @@ class FixedSizeILS : public ILS<Indiv>
 		{
 			bool goon = true;
 
+			std::cout << it << "/" << ILS<Indiv>::m_itmax << "      \r" << std::flush;
+
 			while(goon)
 			{
 				goon = false;
@@ -54,15 +56,17 @@ class FixedSizeILS : public ILS<Indiv>
 						break;
 					}
 				}
+				if(sol.getScore() > best.getScore())
+					best = sol;
 			}
-
-			if(sol.getScore() > best.getScore())
-				best = sol;
 
 			for(unsigned int i(0); i < ILS<Indiv>::m_steps; ++i)
 			{
 				ILS<Indiv>::iterate({sol.getScore()});
 				sol = ILS<Indiv>::m_gen.near(sol, rand()%n);
+
+				if(sol.getScore() > best.getScore())
+					best = sol;
 			}
 		}
 

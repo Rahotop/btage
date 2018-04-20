@@ -7,7 +7,7 @@
 #include "solver/all.hpp"
 #include "opt.hpp"
 
-#define VERSION 3
+#define VERSION 4
 
 int main(int argc, char **argv)
 {
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -63,8 +63,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].meansize; ++j)
 				{
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -117,6 +117,9 @@ int main(int argc, char **argv)
 				GeneratorROOneMax genom(run[i].n);
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
+				Plot<VectorBool> mean(pb);
+
+				mean.add(0., "mean", "ls 1");
 
 				for(unsigned int j(0); j < run[i].agregatesize; ++j)
 				{
@@ -124,8 +127,11 @@ int main(int argc, char **argv)
 
 					ls.solve();
 
-					graph.add(ls, {std::to_string(j)});
+					mean += ls;
+					graph.add(ls, {std::to_string(j)}, {"ls 2"});
 				}
+				mean /= run[i].agregatesize;
+				graph.add(mean);
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -155,8 +161,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].Rmeansize; ++j)
 				{
@@ -172,7 +178,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -181,7 +187,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "detph+ : "+std::to_string(run[i].depthplus)+" ";
@@ -208,6 +214,8 @@ int main(int argc, char **argv)
 				std::ofstream out((run[i].out + "-links.dat").c_str());
 
 				s.getFunction().varLinks(out);
+				out << std::endl;
+				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
 			}
@@ -254,6 +262,60 @@ int main(int argc, char **argv)
 				}
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
+
+
+
+				Plot<VectorBool> graph(pb, run[i].out + "-correlation-paths.dat", run[i].out + "-gnuplot-correlation-paths.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(s.getFunction(),s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(pb,s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+
+				graph.save(run[i].out + "-correlation-paths-graph.jpg", "Correlation");
+
+				std::ofstream plotcorr((run[i].out + "-gnuplot-correlation-paths.sh").c_str());
+
+				plotcorr << "set terminal jpeg size 2000,1000" << std::endl;
+				plotcorr << "set output \"" << run[i].out << "-correlation-paths-graph.jpg" << "\"" << std::endl;
+				plotcorr << "set title \'Correlation between F-ound and F-obj with paths\'" << std::endl;
+				plotcorr << "set xlabel \'F-ound\'" << std::endl;
+				plotcorr << "set ylabel \'F-obj\'" << std::endl;
+				plotcorr << "set key outside" << std::endl;
+				plotcorr << "plot for [i=1:10] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 1 title 'F-ound',\\";
+				plotcorr << std::endl;
+				plotcorr << "for [i=11:20] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 2 title 'F-obj'";
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation-paths.sh" << std::endl;
+
+
+
+				Plot<VectorBool> dist(pb, run[i].out + "-distances.dat", run[i].out + "-gnuplot-distances.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentDist<VectorBool> ls(s.getFunction(),genom);
+
+					ls.solve();
+
+					dist.add(ls, {std::to_string(i)}, {""});
+				}
+
+				dist.save(run[i].out + "-distances-graph.jpg", "Distances");
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-distances.sh" << std::endl;
 			}
 		}
 
@@ -272,7 +334,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -300,8 +362,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].meansize; ++j)
 				{
@@ -326,7 +388,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -353,6 +415,9 @@ int main(int argc, char **argv)
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
+				Plot<VectorBool> mean(pb);
+
+				mean.add(0., "mean", "ls 1");
 
 				for(unsigned int j(0); j < run[i].agregatesize; ++j)
 				{
@@ -360,8 +425,11 @@ int main(int argc, char **argv)
 
 					ls.solve();
 
-					graph.add(ls, {std::to_string(j)});
+					mean += ls;
+					graph.add(ls, {std::to_string(j)}, {"ls 2"});
 				}
+				mean /= run[i].agregatesize;
+				graph.add(mean);
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -390,8 +458,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].Rmeansize; ++j)
 				{
@@ -416,7 +484,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -442,6 +510,8 @@ int main(int argc, char **argv)
 				std::ofstream out((run[i].out + "-links.dat").c_str());
 
 				s.getFunction().varLinks(out);
+				out << std::endl;
+				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
 			}
@@ -488,6 +558,60 @@ int main(int argc, char **argv)
 				}
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
+
+
+
+				Plot<VectorBool> graph(pb, run[i].out + "-correlation-paths.dat", run[i].out + "-gnuplot-correlation-paths.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(s.getFunction(),s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(pb,s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+
+				graph.save(run[i].out + "-correlation-paths-graph.jpg", "Correlation");
+
+				std::ofstream plotcorr((run[i].out + "-gnuplot-correlation-paths.sh").c_str());
+
+				plotcorr << "set terminal jpeg size 2000,1000" << std::endl;
+				plotcorr << "set output \"" << run[i].out << "-correlation-paths-graph.jpg" << "\"" << std::endl;
+				plotcorr << "set title \'Correlation between F-ound and F-obj with paths\'" << std::endl;
+				plotcorr << "set xlabel \'F-ound\'" << std::endl;
+				plotcorr << "set ylabel \'F-obj\'" << std::endl;
+				plotcorr << "set key outside" << std::endl;
+				plotcorr << "plot for [i=1:10] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 1 title 'F-ound',\\";
+				plotcorr << std::endl;
+				plotcorr << "for [i=11:20] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 2 title 'F-obj'";
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation-paths.sh" << std::endl;
+
+
+
+				Plot<VectorBool> dist(pb, run[i].out + "-distances.dat", run[i].out + "-gnuplot-distances.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentDist<VectorBool> ls(s.getFunction(),genom);
+
+					ls.solve();
+
+					dist.add(ls, {std::to_string(i)}, {""});
+				}
+
+				dist.save(run[i].out + "-distances-graph.jpg", "Distances");
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-distances.sh" << std::endl;
 			}
 		}
 
@@ -506,7 +630,7 @@ int main(int argc, char **argv)
 			{
 				srand(run[i].seed);
 				Plot<IndFunction> graph(pb, run[i].out + "-algogen-graph.dat", run[i].out + "-gnuplot-algogen.sh");
-				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"});
+				graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -534,8 +658,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].meansize; ++j)
 				{
@@ -551,7 +675,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -560,7 +684,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -587,6 +711,9 @@ int main(int argc, char **argv)
 				GeneratorROOneMax genom(pb.getN());
 
 				Plot<VectorBool> graph(pb, run[i].out + "-agregate-graph.dat", run[i].out + "-gnuplot-agregate.sh");
+				Plot<VectorBool> mean(pb);
+
+				mean.add(0., "mean", "ls 1");
 
 				for(unsigned int j(0); j < run[i].agregatesize; ++j)
 				{
@@ -594,8 +721,11 @@ int main(int argc, char **argv)
 
 					ls.solve();
 
-					graph.add(ls, {std::to_string(j)});
+					mean += ls;
+					graph.add(ls, {std::to_string(j)}, {"ls 2"});
 				}
+				mean /= run[i].agregatesize;
+				graph.add(mean);
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -624,8 +754,8 @@ int main(int argc, char **argv)
 				Plot<VectorBool> meanpb(pb);
 				Plot<VectorBool> meansol(pb);
 
-				meanpb.add(0., "F-obj");
-				meansol.add(0., "F-ound");
+				meanpb.add(0., "F-obj", "");
+				meansol.add(0., "F-ound", "");
 
 				for(unsigned int j(0); j < run[i].Rmeansize; ++j)
 				{
@@ -641,7 +771,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,run[i].n/5);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -650,7 +780,7 @@ int main(int argc, char **argv)
 
 				graph.add(meanpb);
 				graph.add(meansol);
-				graph.add(best.getScore(), "ILS");
+				graph.add(best.getScore(), "ILS", "");
 
 				std::string settings;
 				settings += "file : "+run[i].pbfile+" ";
@@ -676,6 +806,8 @@ int main(int argc, char **argv)
 				std::ofstream out((run[i].out + "-links.dat").c_str());
 
 				s.getFunction().varLinks(out);
+				out << std::endl;
+				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
 			}
@@ -722,6 +854,60 @@ int main(int argc, char **argv)
 				}
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation.sh" << std::endl;
+
+
+
+				Plot<VectorBool> graph(pb, run[i].out + "-correlation-paths.dat", run[i].out + "-gnuplot-correlation-paths.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(s.getFunction(),s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentCorr<VectorBool> ls(pb,s.getFunction(),pb,genom);
+
+					ls.solve();
+
+					graph.add(ls, {"x","y"}, {"",""});
+				}
+
+				graph.save(run[i].out + "-correlation-paths-graph.jpg", "Correlation");
+
+				std::ofstream plotcorr((run[i].out + "-gnuplot-correlation-paths.sh").c_str());
+
+				plotcorr << "set terminal jpeg size 2000,1000" << std::endl;
+				plotcorr << "set output \"" << run[i].out << "-correlation-paths-graph.jpg" << "\"" << std::endl;
+				plotcorr << "set title \'Correlation between F-ound and F-obj with paths\'" << std::endl;
+				plotcorr << "set xlabel \'F-ound\'" << std::endl;
+				plotcorr << "set ylabel \'F-obj\'" << std::endl;
+				plotcorr << "set key outside" << std::endl;
+				plotcorr << "plot for [i=1:10] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 1 title 'F-ound',\\";
+				plotcorr << std::endl;
+				plotcorr << "for [i=11:20] \"" << run[i].out << "-correlation-paths.dat\" u (column(2*i)):(column(2*i+1)) with lines ls 2 title 'F-obj'";
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-correlation-paths.sh" << std::endl;
+
+
+
+				Plot<VectorBool> dist(pb, run[i].out + "-distances.dat", run[i].out + "-gnuplot-distances.sh");
+
+				for(unsigned int i(0); i < 10; ++i)
+				{
+					FixedSizeDescentDist<VectorBool> ls(s.getFunction(),genom);
+
+					ls.solve();
+
+					dist.add(ls, {std::to_string(i)}, {""});
+				}
+
+				dist.save(run[i].out + "-distances-graph.jpg", "Distances");
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-distances.sh" << std::endl;
 			}
 		}
 	}

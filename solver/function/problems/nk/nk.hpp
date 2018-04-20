@@ -22,6 +22,7 @@ class Nk : public Problem<VectorBool>, public Problem<IndFunction>
 	float evaluate(IndFunction& s);
 
 	unsigned int getN() const;
+	void varLinks(std::ostream& o) const;
 
 	private:
 

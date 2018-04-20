@@ -71,3 +71,37 @@ unsigned int Nk::getN() const
 {
 	return m_n;
 }
+
+void Nk::varLinks(std::ostream& o) const
+{
+	unsigned int *tab = new unsigned int[m_n*m_n];
+	for(unsigned int i(0); i < m_n*m_n; ++i) tab[i] = 0;
+
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		for(unsigned int j(0); j < m_k1; ++j)
+		{
+			for(unsigned int k(j+1); k < m_k1; ++k)
+			{
+				++tab[m_var[i*m_k1+j]*m_n+m_var[i*m_k1+k]];
+				++tab[m_var[i*m_k1+k]*m_n+m_var[i*m_k1+j]];
+			}
+		}
+	}
+
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		for(unsigned int j(0); j < m_n; ++j)
+		{
+			if(tab[i*m_n+j])
+				o << std::setw(3) << tab[i*m_n+j];
+			else if(i == j)
+				o << "  |";
+			else
+				o << "  .";
+		}
+		o << std::endl;
+	}
+
+	delete[] tab;
+}

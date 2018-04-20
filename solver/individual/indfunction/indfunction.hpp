@@ -14,6 +14,10 @@ class IndFunction : public Individual
 	IndFunction(const FunctionTree& fn);
 	IndFunction(unsigned int maxsize, unsigned int depth, unsigned int termset, bool full = false);
 	~IndFunction();
+/*
+	float getScore() const;
+	void setScore(float score);*/
+	void resetScore();
 
 	FunctionTree& getFunction();
 	IndFunction& operator=(const IndFunction& ind);
@@ -21,7 +25,7 @@ class IndFunction : public Individual
 	private:
 
 	FunctionTree m_tree;
-	std::vector<float> m_score;
+	std::vector<float> m_scores;
 };
 
 #endif
