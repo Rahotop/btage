@@ -8,7 +8,28 @@ std::vector<opt> getopt(int argc, char **argv)
 		tmp.push_back(std::string(argv[i]));
 	}
 
-	return getopt(tmp);
+
+	std::vector<opt> run = getopt(tmp);
+
+	bool exeall(true);
+	for(unsigned int i(0); i < run.size(); ++i)
+	{
+		if(run[i].execute)
+		{
+			exeall = false;
+			break;
+		}
+	}
+
+	if(exeall)
+	{
+		for(unsigned int i(0); i < run.size(); ++i)
+		{
+			run[i].execute = true;
+		}
+	}
+
+	return run;
 }
 
 std::vector<opt> getopt(std::vector<std::string> args)
@@ -155,9 +176,19 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().seed = std::stoi(args[i+1]);
 			i += 2;
 		}
+		else if(args[i] == "-exe")
+		{
+			unsigned int id = std::stoi(args[i+1]);
+			tmp[id].execute = true;
+			i += 2;
+		}
 		else if(args[i].size())
 		{
 			std::cout << "error : \"" << args[i] << "\" unknown command." << std::endl;
+			++i;
+		}
+		else
+		{
 			++i;
 		}
 	}

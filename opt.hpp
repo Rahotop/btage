@@ -35,7 +35,8 @@ struct opt
 		agregatesize(10),
 		Rmeansize(10),
 		out("out"),
-		seed(rand()) {}
+		seed(rand()),
+		execute(false) {}
 
 	bool pbtree;
 	bool nk;
@@ -63,6 +64,7 @@ struct opt
 	unsigned int Rmeansize;
 	std::string out;
 	unsigned int seed;
+	bool execute;
 };
 
 std::vector<opt> getopt(int argc, char **argv);

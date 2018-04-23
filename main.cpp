@@ -19,6 +19,8 @@ int main(int argc, char **argv)
 
 	for(unsigned int i(0); i < run.size(); ++i)
 	{
+		if(run[i].execute)
+		{
 		//PBTREE
 
 		if(run[i].pbtree)
@@ -113,7 +115,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(pb,genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -211,7 +213,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -447,7 +449,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(pb,genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -543,7 +545,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -778,7 +780,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].meansize;
 				meansol /= (float)run[i].meansize;
 
-				FixedSizeILS<VectorBool> ls3(pb,genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(pb,genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -874,7 +876,7 @@ int main(int argc, char **argv)
 				meanpb /= (float)run[i].Rmeansize;
 				meansol /= (float)run[i].Rmeansize;
 
-				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,10000,15);
+				FixedSizeILS<VectorBool> ls3(s.getFunction(),genom,1000,15);
 				VectorBool best = ls3.solve();
 
 
@@ -1014,6 +1016,7 @@ int main(int argc, char **argv)
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-distances.sh" << std::endl;
 			}
+		}
 		}
 	}
 
