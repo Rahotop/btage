@@ -1,4 +1,4 @@
-g++ -Wall -Wextra -pedantic -std=c++11 -O3 \
+g++ -Wall -Wextra -pedantic -std=c++11 -O3 -o vh.btage\
 	*.cpp \
 	solver/*.cpp \
 	solver/algogen/*.cpp \
