@@ -19,8 +19,8 @@ class GeneratorIA : public Generator<Indiv>
 
 	}
 
-	virtual Indiv crossover(const std::vector<Indiv>& pop) const = 0;
-	virtual Indiv mutation(const std::vector<Indiv>& pop) const = 0;
+	virtual void crossover(const std::vector<Indiv>& pop, std::vector<Indiv>& newgen, unsigned int index) const = 0;
+	virtual void mutation(const std::vector<Indiv>& pop, std::vector<Indiv>& newgen, unsigned int index) const = 0;
 
 	private:
 

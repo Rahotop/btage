@@ -36,6 +36,13 @@ bool Individual::operator<(const Individual& ind) const
 	return m_score < ind.m_score;
 }
 
+void Individual::swap(Individual& ind)
+{
+	float tmp = m_score;
+	m_score = ind.m_score;
+	ind.m_score = tmp;
+}
+
 
 
 

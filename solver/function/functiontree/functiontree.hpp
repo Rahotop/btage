@@ -31,17 +31,20 @@ class FunctionTree : public Function<VectorBool>
 	unsigned int size() const;
 	unsigned int getNode(unsigned int offset) const;
 	bool isLeaf(unsigned int node) const;
-	void show(std::ostream& o, unsigned int depth = 0, unsigned int node = 0) const;
 
 	FunctionTree& operator=(const FunctionTree& f);
+	void swap(FunctionTree& f);
 	unsigned int copy(const FunctionTree& f, unsigned int fnode, unsigned int root = 0);
 	void erase(unsigned int node);
 	void replace(unsigned int node, const FunctionTree& f);
+
 	void cut(unsigned int node);
 	void mutate(unsigned int node);
 
 	unsigned int countOP(unsigned int op) const;
 	void varLinks(std::ostream& o) const;
+	void show(std::ostream& o, unsigned int depth = 0, unsigned int node = 0) const;
+	void showClauses(std::ostream& o, unsigned int depth = 0, unsigned int node = 0) const;
 
 	private:
 

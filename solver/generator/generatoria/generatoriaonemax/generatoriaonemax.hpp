@@ -13,8 +13,8 @@ class GeneratorIAOneMax : public GeneratorIA<VectorBool>
 	~GeneratorIAOneMax();
 
 	VectorBool generate() const;
-	VectorBool crossover(const std::vector<VectorBool>& pop) const;
-	VectorBool mutation(const std::vector<VectorBool>& pop) const;
+	void crossover(const std::vector<VectorBool>& pop, std::vector<VectorBool>& newgen, unsigned int index) const;
+	void mutation(const std::vector<VectorBool>& pop, std::vector<VectorBool>& newgen, unsigned int index) const;
 
 	private:
 

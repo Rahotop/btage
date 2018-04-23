@@ -14,13 +14,15 @@ class IndFunction : public Individual
 	IndFunction(const FunctionTree& fn);
 	IndFunction(unsigned int maxsize, unsigned int depth, unsigned int termset, bool full = false);
 	~IndFunction();
-/*
+
 	float getScore() const;
-	void setScore(float score);*/
+	void setScore(float score);
 	void resetScore();
+	bool operator<(const Individual& ind) const;
 
 	FunctionTree& getFunction();
 	IndFunction& operator=(const IndFunction& ind);
+	void swap(IndFunction& ind);
 
 	private:
 

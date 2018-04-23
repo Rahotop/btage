@@ -7,7 +7,7 @@
 #include "solver/all.hpp"
 #include "opt.hpp"
 
-#define VERSION 4
+#define VERSION 5
 
 int main(int argc, char **argv)
 {
@@ -53,6 +53,39 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-algogen.sh" << std::endl;
+
+				std::ofstream ratio(run[i].out + "-ratios.dat");
+				std::ofstream plot(run[i].out + "-gnuplot-ratios.sh");
+
+				ratio << algo(1, run[i].nbind);
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set title \'Ratios of operators in population\'" << std::endl;
+				plot << "set dgrid3d 100,100" << std::endl;
+				plot << "set zrange [0:" << run[i].maxsizetree << "]" << std::endl;
+				plot << "set xlabel \'population\'" << std::endl;
+				plot << "set ylabel \'iterations\'" << std::endl;
+				plot << "set zlabel \'nbOp\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "set hidden3d" << std::endl;
+				plot << "set view 20, 50" << std::endl;
+				plot << "set output \"" << run[i].out << "-0ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:8 with impulses lw 10 title 'Size'" << std::endl;
+				plot << "set output \"" << run[i].out << "-1ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:3 with impulses lw 10 title 'Scal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-2ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:4 with impulses lw 10 title 'Equal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-3ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:5 with impulses lw 10 title 'Max'" << std::endl;
+				plot << "set output \"" << run[i].out << "-4ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:6 with impulses lw 10 title 'Min'" << std::endl;
+				plot << "set output \"" << run[i].out << "-5ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:7 with impulses lw 10 title 'Plus'" << std::endl;
+				plot << "set output \"" << run[i].out << "-6ratios-graph.jpg" << "\"" << std::endl;
+				plot << "set autoscale z" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:9 with impulses lw 10 title 'Fitness'" << std::endl;
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-ratios.sh" << std::endl;
 			}
 
 			if(run[i].graphmean)
@@ -218,6 +251,8 @@ int main(int argc, char **argv)
 				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
+				out << std::endl;
+				s.getFunction().showClauses(out);
 			}
 
 			if(run[i].correlation)
@@ -352,6 +387,39 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-algogen.sh" << std::endl;
+
+				std::ofstream ratio(run[i].out + "-ratios.dat");
+				std::ofstream plot(run[i].out + "-gnuplot-ratios.sh");
+
+				ratio << algo(1, run[i].nbind);
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set title \'Ratios of operators in population\'" << std::endl;
+				plot << "set dgrid3d 100,100" << std::endl;
+				plot << "set zrange [0:" << run[i].maxsizetree << "]" << std::endl;
+				plot << "set xlabel \'population\'" << std::endl;
+				plot << "set ylabel \'iterations\'" << std::endl;
+				plot << "set zlabel \'nbOp\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "set hidden3d" << std::endl;
+				plot << "set view 20, 50" << std::endl;
+				plot << "set output \"" << run[i].out << "-0ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:8 with impulses lw 10 title 'Size'" << std::endl;
+				plot << "set output \"" << run[i].out << "-1ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:3 with impulses lw 10 title 'Scal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-2ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:4 with impulses lw 10 title 'Equal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-3ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:5 with impulses lw 10 title 'Max'" << std::endl;
+				plot << "set output \"" << run[i].out << "-4ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:6 with impulses lw 10 title 'Min'" << std::endl;
+				plot << "set output \"" << run[i].out << "-5ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:7 with impulses lw 10 title 'Plus'" << std::endl;
+				plot << "set output \"" << run[i].out << "-6ratios-graph.jpg" << "\"" << std::endl;
+				plot << "set autoscale z" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:9 with impulses lw 10 title 'Fitness'" << std::endl;
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-ratios.sh" << std::endl;
 			}
 
 			if(run[i].graphmean)
@@ -514,6 +582,8 @@ int main(int argc, char **argv)
 				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
+				out << std::endl;
+				s.getFunction().showClauses(out);
 			}
 
 			if(run[i].correlation)
@@ -648,6 +718,39 @@ int main(int argc, char **argv)
 				graph.save(run[i].out + "-algogen-graph.jpg", "fitness as a function of iterations "+settings);
 
 				gnuplot << "gnuplot " << run[i].out << "-gnuplot-algogen.sh" << std::endl;
+
+				std::ofstream ratio(run[i].out + "-ratios.dat");
+				std::ofstream plot(run[i].out + "-gnuplot-ratios.sh");
+
+				ratio << algo(1, run[i].nbind);
+
+				plot << "set terminal jpeg size 2000,1000" << std::endl;
+				plot << "set title \'Ratios of operators in population\'" << std::endl;
+				plot << "set dgrid3d 100,100" << std::endl;
+				plot << "set zrange [0:" << run[i].maxsizetree << "]" << std::endl;
+				plot << "set xlabel \'population\'" << std::endl;
+				plot << "set ylabel \'iterations\'" << std::endl;
+				plot << "set zlabel \'nbOp\'" << std::endl;
+				plot << "set key outside" << std::endl;
+				plot << "set hidden3d" << std::endl;
+				plot << "set view 20, 50" << std::endl;
+				plot << "set output \"" << run[i].out << "-0ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:8 with impulses lw 10 title 'Size'" << std::endl;
+				plot << "set output \"" << run[i].out << "-1ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:3 with impulses lw 10 title 'Scal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-2ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:4 with impulses lw 10 title 'Equal'" << std::endl;
+				plot << "set output \"" << run[i].out << "-3ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:5 with impulses lw 10 title 'Max'" << std::endl;
+				plot << "set output \"" << run[i].out << "-4ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:6 with impulses lw 10 title 'Min'" << std::endl;
+				plot << "set output \"" << run[i].out << "-5ratios-graph.jpg" << "\"" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:7 with impulses lw 10 title 'Plus'" << std::endl;
+				plot << "set output \"" << run[i].out << "-6ratios-graph.jpg" << "\"" << std::endl;
+				plot << "set autoscale z" << std::endl;
+				plot << "splot for [i=0:" << run[i].nbit << ":" << run[i].nbit/10-1 << "] \"" << run[i].out << "-ratios.dat\" every ::i*" << run[i].nbind << "::(i+1)*" << run[i].nbind << "-1 using 2:1:9 with impulses lw 10 title 'Fitness'" << std::endl;
+
+				gnuplot << "gnuplot " << run[i].out << "-gnuplot-ratios.sh" << std::endl;
 			}
 
 			if(run[i].graphmean)
@@ -810,6 +913,8 @@ int main(int argc, char **argv)
 				pb.varLinks(out);
 				out << std::endl;
 				s.getFunction().show(out);
+				out << std::endl;
+				s.getFunction().showClauses(out);
 			}
 
 			if(run[i].correlation)

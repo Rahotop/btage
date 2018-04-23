@@ -1,6 +1,8 @@
 #ifndef INDIVIDUAL_HPP_INCLUDED
 #define INDIVIDUAL_HPP_INCLUDED
 
+#include <iostream>
+
 class Individual
 {
 	public:
@@ -13,7 +15,8 @@ class Individual
 	virtual void setScore(float score);
 
 	Individual& operator=(const Individual& ind);
-	bool operator<(const Individual& ind) const;
+	virtual bool operator<(const Individual& ind) const;
+	void swap(Individual& ind);
 
 	private:
 

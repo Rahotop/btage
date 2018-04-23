@@ -14,11 +14,11 @@ class GeneratorIAIndFunction : public GeneratorIA<IndFunction>
 	~GeneratorIAIndFunction();
 
 	IndFunction generate() const;
-	IndFunction crossover(const std::vector<IndFunction>& pop) const;
-	IndFunction mutation(const std::vector<IndFunction>& pop) const;
+	void crossover(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
+	void mutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 
-	IndFunction subtreeMutation(const std::vector<IndFunction>& pop) const;
-	IndFunction pointMutation(const std::vector<IndFunction>& pop) const;
+	void subtreeMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
+	void pointMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 
 	std::ostream& show(std::ostream& o, IndFunction& ind);
 	std::ostream& oneLine(std::ostream& o, IndFunction& ind);

@@ -20,7 +20,7 @@ VectorBool GeneratorIAOneMax::generate() const
 	return tmp;
 }
 
-VectorBool GeneratorIAOneMax::crossover(const std::vector<VectorBool>& pop) const
+void GeneratorIAOneMax::crossover(const std::vector<VectorBool>& pop, std::vector<VectorBool>& newgen, unsigned int index) const
 {
 	unsigned int s1 = rand()%pop.size();
 	unsigned int s2 = rand()%pop.size();
@@ -30,10 +30,11 @@ VectorBool GeneratorIAOneMax::crossover(const std::vector<VectorBool>& pop) cons
 	{
 		tmp[i] = (rand()%2) ? pop[s1][i] : pop[s2][i];
 	}
-	return tmp;
+	
+	newgen[index] = tmp;
 }
 
-VectorBool GeneratorIAOneMax::mutation(const std::vector<VectorBool>& pop) const
+void GeneratorIAOneMax::mutation(const std::vector<VectorBool>& pop, std::vector<VectorBool>& newgen, unsigned int index) const
 {
 	unsigned int s = rand()%pop.size();
 
@@ -41,7 +42,7 @@ VectorBool GeneratorIAOneMax::mutation(const std::vector<VectorBool>& pop) const
 	unsigned int mut = rand()%m_n;
 	tmp[mut] = !tmp[mut];
 
-	return tmp;
+	newgen[index] = tmp;
 }
 
 

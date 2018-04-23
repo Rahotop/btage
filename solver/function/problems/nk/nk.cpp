@@ -54,16 +54,16 @@ float Nk::evaluate(VectorBool& s)
 float Nk::evaluate(IndFunction& s)
 {
 	GeneratorROOneMax gen(m_n);
-	FunctionTree fn(s.getFunction());
+	FunctionTree& fn = s.getFunction();
 	FixedSizeDescentInc<VectorBool> d(fn, gen);
 
 	float tmp = 0.;
-	for(unsigned int i(0); i < 30; ++i)
+	for(unsigned int i(0); i < 10; ++i)
 	{
 		VectorBool v = d.solve(); 
 		tmp += evaluate(v);
 	}
-	tmp /= 30.;
+	tmp /= 10.;
 	return tmp;
 }
 

@@ -21,7 +21,7 @@ float OneMax::evaluate(VectorBool& s)
 float OneMax::evaluate(IndFunction& s)
 {
 	GeneratorROOneMax gen(m_n);
-	FunctionTree fn(s.getFunction());
+	FunctionTree fn = s.getFunction();
 	FixedSizeDescent<VectorBool> d(fn, gen);
 
 	float tmp = 0.;

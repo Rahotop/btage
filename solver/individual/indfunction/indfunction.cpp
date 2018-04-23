@@ -23,7 +23,7 @@ IndFunction::IndFunction(unsigned int maxsize, unsigned int depth, unsigned int 
 IndFunction::~IndFunction()
 {
 	
-}/*
+}
 
 float IndFunction::getScore() const
 {
@@ -40,10 +40,15 @@ void IndFunction::setScore(float score)
 {
 	m_scores.push_back(score);
 }
-*/
+
 void IndFunction::resetScore()
 {
 	m_scores.clear();
+}
+
+bool IndFunction::operator<(const Individual& ind) const
+{
+	return getScore() < ind.getScore();
 }
 
 FunctionTree& IndFunction::getFunction()
@@ -59,5 +64,15 @@ IndFunction& IndFunction::operator=(const IndFunction& ind)
 
 	return *this;
 }
+
+void IndFunction::swap(IndFunction& ind)
+{
+	Individual::swap(ind);
+
+	m_tree.swap(ind.m_tree);
+	m_scores.swap(ind.m_scores);
+}
+
+
 
 

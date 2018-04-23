@@ -16,7 +16,7 @@ IndFunction GeneratorIAIndFunction::generate() const
 	return tmp;
 }
 
-IndFunction GeneratorIAIndFunction::crossover(const std::vector<IndFunction>& pop) const
+void GeneratorIAIndFunction::crossover(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const
 {
 	IndFunction tmp1(pop[rand()%pop.size()]);
 	IndFunction tmp2(pop[rand()%pop.size()]);
@@ -43,18 +43,18 @@ IndFunction GeneratorIAIndFunction::crossover(const std::vector<IndFunction>& po
 	tmp1.getFunction().replace(tmp1.getFunction().getNode(rand()%tmp1.getFunction().size()), toadd);
 	tmp1.resetScore();
 
-	return tmp1;
+	newgen[index].swap(tmp1);
 }
 
-IndFunction GeneratorIAIndFunction::mutation(const std::vector<IndFunction>& pop) const
+void GeneratorIAIndFunction::mutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const
 {
 	if(rand()%1)
-		return subtreeMutation(pop);
+		return subtreeMutation(pop, newgen, index);
 	else
-		return pointMutation(pop);
+		return pointMutation(pop, newgen, index);
 }
 
-IndFunction GeneratorIAIndFunction::subtreeMutation(const std::vector<IndFunction>& pop) const
+void GeneratorIAIndFunction::subtreeMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const
 {
 	IndFunction tmp(pop[rand()%pop.size()]);
 
@@ -68,17 +68,17 @@ IndFunction GeneratorIAIndFunction::subtreeMutation(const std::vector<IndFunctio
 	tmp.getFunction().replace(tmp.getFunction().getNode(rand()%tmp.getFunction().size()), toadd.getFunction());
 	tmp.resetScore();
 
-	return tmp;
+	newgen[index].swap(tmp);
 }
 
-IndFunction GeneratorIAIndFunction::pointMutation(const std::vector<IndFunction>& pop) const
+void GeneratorIAIndFunction::pointMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const
 {
 	IndFunction tmp(pop[rand()%pop.size()]);
 
 	tmp.getFunction().mutate(tmp.getFunction().getNode(rand()%tmp.getFunction().size()));
 	tmp.resetScore();
 
-	return tmp;
+	newgen[index].swap(tmp);
 }
 
 

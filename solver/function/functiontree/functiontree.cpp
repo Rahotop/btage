@@ -216,6 +216,57 @@ FunctionTree& FunctionTree::operator=(const FunctionTree& f)
 	return *this;
 }
 
+void FunctionTree::swap(FunctionTree& f)
+{
+	unsigned int tmpui = m_maxsize;
+	m_maxsize = f.m_maxsize;
+	f.m_maxsize = tmpui;
+
+	unsigned int *tmpuip = m_op;
+	m_op = f.m_op;
+	f.m_op = tmpuip;
+
+	tmpuip = m_root;
+	m_root = f.m_root;
+	f.m_root = tmpuip;
+
+	tmpuip = m_child1;
+	m_child1 = f.m_child1;
+	f.m_child1 = tmpuip;
+
+	tmpuip = m_child2;
+	m_child2 = f.m_child2;
+	f.m_child2 = tmpuip;
+
+	bool *tmpbp = m_isvarin;
+	m_isvarin = f.m_isvarin;
+	f.m_isvarin = tmpbp;
+
+	float *tmpfp = m_preveval;
+	m_preveval = f.m_preveval;
+	f.m_preveval = tmpfp;
+
+	tmpfp = m_curreval;
+	m_curreval = f.m_curreval;
+	f.m_curreval = tmpfp;
+
+	tmpfp = m_scal;
+	m_scal = f.m_scal;
+	f.m_scal = tmpfp;
+
+	tmpuip = m_bitindex;
+	m_bitindex = f.m_bitindex;
+	f.m_bitindex = tmpuip;
+
+	tmpbp = m_isused;
+	m_isused = f.m_isused;
+	f.m_isused = tmpbp;
+
+	tmpui = m_n;
+	m_n = f.m_n;
+	f.m_n = tmpui;
+}
+
 unsigned int FunctionTree::newNode()
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
@@ -347,7 +398,6 @@ unsigned int FunctionTree::copy(const FunctionTree& f, unsigned int fnode, unsig
 
 	if(m_op[node] == 2)
 	{
-		//m_child1[node] = copy(f, f.m_child1[fnode], node);
 		unsigned int child = f.m_child1[fnode];
 		while(f.m_op[child] == 2)
 		{
@@ -360,6 +410,8 @@ unsigned int FunctionTree::copy(const FunctionTree& f, unsigned int fnode, unsig
 	{
 		m_child1[node] = copy(f, f.m_child1[fnode], node);
 		m_child2[node] = copy(f, f.m_child2[fnode], node);
+
+		//m_op[node] = (isOPinSubTree(6,node)) ? 6 : m_op[node];
 	}
 
 	return node;
@@ -563,6 +615,45 @@ void FunctionTree::show(std::ostream& o, unsigned int depth, unsigned int node) 
 		show(o, depth+1, m_child1[node]);
 	if(m_op[node] > 2)
 		show(o, depth+1, m_child2[node]);
+}
+
+void FunctionTree::showClauses(std::ostream& o, unsigned int depth, unsigned int node) const
+{
+	if(isOPinSubTree(6, node))
+	{
+		if(m_op[node] > 1)
+			showClauses(o, depth, m_child1[node]);
+		if(m_op[node] > 2)
+			showClauses(o, depth, m_child2[node]);
+	}
+	else
+	{
+		for(unsigned int i(0); i < depth; ++i)
+		{
+			o << "| ";
+		}
+		o << "-";
+		if(m_op[node] == 0)
+			o << "X" << m_bitindex[node];
+		else if(m_op[node] == 1)
+			o << "!X" << m_bitindex[node];
+		else if(m_op[node] == 2)
+			o << "Scal " << m_scal[node];
+		else if(m_op[node] == 3)
+			o << "Equal";
+		else if(m_op[node] == 4)
+			o << "Max";
+		else if(m_op[node] == 5)
+			o << "Min";
+		else if(m_op[node] == 6)
+			o << "Plus";
+		o << std::endl;
+
+		if(m_op[node] > 1)
+			showClauses(o, depth+1, m_child1[node]);
+		if(m_op[node] > 2)
+			showClauses(o, depth+1, m_child2[node]);
+	}
 }
 
 void FunctionTree::updateVarIn(unsigned int node)

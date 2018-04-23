@@ -26,6 +26,7 @@ class Algogen : public Solver<Indiv>
 	Indiv solve()
 	{
 		std::vector<Indiv> pop;
+		std::vector<Indiv> newgen(m_nbInd);
 		for(unsigned int i(0); i < m_nbInd; ++i)
 		{
 			pop.push_back(m_gen.generate());
@@ -45,7 +46,6 @@ class Algogen : public Solver<Indiv>
 		{
 			std::cout << it << "/" << m_itMax << "    \r" << std::flush;
 			copy = m_nbInd-1;
-			std::vector<Indiv> newgen(m_nbInd);
 
 			unsigned int avsize = 0;
 			#pragma omp parallel for
@@ -54,17 +54,16 @@ class Algogen : public Solver<Indiv>
 				float tmp = distribution(generator);
 				if(tmp < m_pcross)
 				{
-					newgen[i] = m_gen.crossover(pop);
+					m_gen.crossover(pop, newgen, i);
 				}
 				else if(tmp < m_pcopy)
 				{
-					newgen[i] = pop[copy];
-					#pragma omp atomic
-					--copy;
+					#pragma omp critical
+					newgen[i] = pop[copy--];
 				}
 				else if(tmp < m_pmut)
 				{
-					newgen[i] = m_gen.mutation(pop);
+					m_gen.mutation(pop, newgen, i);
 				}
 				else
 				{
@@ -84,6 +83,19 @@ class Algogen : public Solver<Indiv>
 									(float)pop.back().getFunction().countOP(4),
 									(float)pop.back().getFunction().countOP(5),
 									(float)pop.back().getFunction().countOP(6)});
+
+			for(unsigned int i(0); i < m_nbInd; ++i)
+			{
+				Solver<Indiv>::iterate({(float)i,
+										(float)pop[i].getFunction().countOP(2),
+										(float)pop[i].getFunction().countOP(3),
+										(float)pop[i].getFunction().countOP(4),
+										(float)pop[i].getFunction().countOP(5),
+										(float)pop[i].getFunction().countOP(6),
+										(float)pop[i].getFunction().size(),
+										pop[i].getScore()}, 1);
+			}
+
 			if(best < pop.back())
 				best = pop.back();
 		}

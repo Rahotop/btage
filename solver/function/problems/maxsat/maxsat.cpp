@@ -65,13 +65,13 @@ float MaxSat::evaluate(VectorBool& s)
 float MaxSat::evaluate(IndFunction& s)
 {
 	GeneratorROOneMax gen(m_n);
-	FunctionTree fn(s.getFunction());
+	FunctionTree& fn = s.getFunction();
 	FixedSizeDescentInc<VectorBool> d(fn, gen);
 
 	float tmp = 0.;
-	for(unsigned int i(0); i < 10; ++i)
+	for(unsigned int i = 0; i < 10; ++i)
 	{
-		VectorBool v = d.solve(); 
+		VectorBool v = d.solve();
 		tmp += evaluate(v);
 	}
 	tmp /= 10.;
