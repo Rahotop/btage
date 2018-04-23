@@ -155,7 +155,7 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().seed = std::stoi(args[i+1]);
 			i += 2;
 		}
-		else
+		else if(args[i].size())
 		{
 			std::cout << "error : \"" << args[i] << "\" unknown command." << std::endl;
 			++i;

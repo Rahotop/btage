@@ -34,8 +34,6 @@ class FixedSizeILS : public ILS<Indiv>
 		{
 			bool goon = true;
 
-			std::cout << it << "/" << ILS<Indiv>::m_itmax << "      \r" << std::flush;
-
 			while(goon)
 			{
 				goon = false;
