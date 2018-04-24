@@ -17,6 +17,7 @@ class PbFunction : public Problem<IndFunction>, public FunctionTree
 	~PbFunction();
 
 	float evaluate(IndFunction& s);
+	float evaluate(VectorBool& s);
 
 	friend std::ostream& operator<<(std::ostream& o, const PbFunction& f);
 

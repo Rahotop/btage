@@ -5,7 +5,7 @@
 #include "../individual.hpp"
 #include "../../function/functiontree/functiontree.hpp"
 
-class IndFunction : public Individual
+class IndFunction : public Individual, public FunctionTree
 {
 	public:
 
@@ -26,7 +26,6 @@ class IndFunction : public Individual
 
 	private:
 
-	FunctionTree m_tree;
 	std::vector<float> m_scores;
 };
 

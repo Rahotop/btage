@@ -1,21 +1,21 @@
 #include "indfunction.hpp"
 
-IndFunction::IndFunction() : Individual(), m_tree(), m_scores()
+IndFunction::IndFunction() : Individual(), FunctionTree(), m_scores()
 {
 
 }
 
-IndFunction::IndFunction(const IndFunction& ind) : Individual(ind), m_tree(ind.m_tree), m_scores(ind.m_scores)
+IndFunction::IndFunction(const IndFunction& ind) : Individual(ind), FunctionTree(ind), m_scores(ind.m_scores)
 {
 
 }
 
-IndFunction::IndFunction(const FunctionTree& fn) : Individual(), m_tree(fn), m_scores()
+IndFunction::IndFunction(const FunctionTree& fn) : Individual(), FunctionTree(fn), m_scores()
 {
 
 }
 
-IndFunction::IndFunction(unsigned int maxsize, unsigned int depth, unsigned int termset, bool full) : Individual(), m_tree(maxsize,depth,termset,full), m_scores()
+IndFunction::IndFunction(unsigned int maxsize, unsigned int depth, unsigned int termset, bool full) : Individual(), FunctionTree(maxsize,depth,termset,full), m_scores()
 {
 
 }
@@ -53,13 +53,13 @@ bool IndFunction::operator<(const Individual& ind) const
 
 FunctionTree& IndFunction::getFunction()
 {
-	return m_tree;
+	return *this;
 }
 
 IndFunction& IndFunction::operator=(const IndFunction& ind)
 {
 	Individual::operator=(ind);
-	m_tree = ind.m_tree;
+	FunctionTree::operator=(ind);
 	m_scores = ind.m_scores;
 
 	return *this;
@@ -69,7 +69,7 @@ void IndFunction::swap(IndFunction& ind)
 {
 	Individual::swap(ind);
 
-	m_tree.swap(ind.m_tree);
+	FunctionTree::swap(ind);
 	m_scores.swap(ind.m_scores);
 }
 

@@ -26,6 +26,11 @@ float PbFunction::evaluate(IndFunction& s)
 	return tmp;
 }
 
+float PbFunction::evaluate(VectorBool& s)
+{
+	return FunctionTree::evaluate(s);
+}
+
 std::ostream& operator<<(std::ostream& o, const PbFunction& f)
 {
 	f.show(o);
