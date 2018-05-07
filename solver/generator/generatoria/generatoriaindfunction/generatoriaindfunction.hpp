@@ -20,9 +20,6 @@ class GeneratorIAIndFunction : public GeneratorIA<IndFunction>
 	void subtreeMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 	void pointMutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 
-	std::ostream& show(std::ostream& o, IndFunction& ind);
-	std::ostream& oneLine(std::ostream& o, IndFunction& ind);
-
 	private:
 
 	unsigned int m_n;

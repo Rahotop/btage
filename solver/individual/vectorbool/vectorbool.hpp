@@ -18,6 +18,7 @@ class VectorBool : public Individual
 
 	VectorBool& operator=(const VectorBool& v);
 	unsigned int dist(const VectorBool& v) const;
+	bool operator==(const VectorBool& v);
 
 	private:
 

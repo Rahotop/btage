@@ -1,5 +1,6 @@
 #include "function.hpp"
 #include "functiontree/functiontree.hpp"
+#include "functionarray/functionarray.hpp"
 #include "problems/problem.hpp"
 #include "problems/onemax/onemax.hpp"
 #include "problems/pbfunction/pbfunction.hpp"

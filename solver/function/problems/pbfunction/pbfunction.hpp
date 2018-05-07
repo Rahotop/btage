@@ -5,11 +5,12 @@
 #include "../../functiontree/functiontree.hpp"
 #include "../../../individual/vectorbool/vectorbool.hpp"
 #include "../../../individual/indfunction/indfunction.hpp"
+#include "../../../individual/indarray/indarray.hpp"
 #include "../../../generator/generatorro/generatorroonemax/generatorroonemax.hpp"
 #include "../../../localsearch/descent/fixedsizedescent/fixedsizedescent.hpp"
 #include "../../../localsearch/descent/fixedsizedescent/fixedsizedescentinc/fixedsizedescentinc.hpp"
 
-class PbFunction : public Problem<IndFunction>, public FunctionTree
+class PbFunction : public Problem<IndFunction>, public FunctionTree, public Problem<IndArray>
 {
 	public:
 
@@ -18,6 +19,7 @@ class PbFunction : public Problem<IndFunction>, public FunctionTree
 
 	float evaluate(IndFunction& s);
 	float evaluate(VectorBool& s);
+	float evaluate(IndArray& s);
 
 	friend std::ostream& operator<<(std::ostream& o, const PbFunction& f);
 

@@ -182,6 +182,13 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp[id].execute = true;
 			i += 2;
 		}
+		else if(args[i] == "-fnarray")
+		{
+			tmp.back().functionarray = true;
+			tmp.back().maxdepth = std::stoi(args[i+1]);
+			tmp.back().initwidth = std::stoi(args[i+2]);
+			i += 3;
+		}
 		else if(args[i].size())
 		{
 			std::cout << "error : \"" << args[i] << "\" unknown command." << std::endl;

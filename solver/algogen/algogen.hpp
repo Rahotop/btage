@@ -44,6 +44,7 @@ class Algogen : public Solver<Indiv>
 		std::uniform_real_distribution<float> distribution(0.0,1.0);
 		for(unsigned int it(0); it < m_itMax; ++it)
 		{
+			std::cout << it << "/" << m_itMax << "    \r" << std::flush;
 			copy = m_nbInd-1;
 
 			unsigned int avsize = 0;

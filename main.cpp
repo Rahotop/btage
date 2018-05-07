@@ -24,6 +24,8 @@ void links(opt run, PB& pb, Indiv& s);
 template<class Indiv, class PB>
 void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s);
 template<class Indiv, class PB>
+void freq(opt run, PB& pb, Indiv& s);
+template<class Indiv, class PB>
 void calculate(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb);
 
 int main(int argc, char **argv)
@@ -38,42 +40,85 @@ int main(int argc, char **argv)
 	{
 		if(run[i].execute)
 		{
-			//PBTREE
-
-			if(run[i].pbtree)
+			if(run[i].functionarray)
 			{
-				srand(run[i].seed);
-				PbFunction pb(run[i].n, run[i].depthplus, run[i].depthmin);
-				GeneratorIAIndFunction gen(run[i].n, run[i].maxsizetree, run[i].initdepth);
-				Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+				//PBTREE
 
-				calculate<IndFunction,PbFunction>(gnuplot, run[i], algo, pb);
+				if(run[i].pbtree)
+				{
+					srand(run[i].seed);
+					PbFunction pb(run[i].n, run[i].depthplus, run[i].depthmin);
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, run[i].n);
+					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+
+					calculate<IndArray,PbFunction>(gnuplot, run[i], algo, pb);
+				}
+
+				//NK
+
+				else if(run[i].nk)
+				{
+					srand(run[i].seed);
+					Nk pb(run[i].pbfile);
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN());
+					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+					run[i].n = pb.getN();
+
+					calculate<IndArray,Nk>(gnuplot, run[i], algo, pb);
+				}
+
+				//MAXSAT
+
+				else if(run[i].maxsat)
+				{
+					srand(run[i].seed);
+					MaxSat pb(run[i].pbfile);
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN());
+					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+					run[i].n = pb.getN();
+
+					calculate<IndArray,MaxSat>(gnuplot, run[i], algo, pb);
+				}
 			}
-
-			//NK
-
-			if(run[i].nk)
+			else
 			{
-				srand(run[i].seed);
-				Nk pb(run[i].pbfile);
-				GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
-				Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
-				run[i].n = pb.getN();
+				//PBTREE
 
-				calculate<IndFunction,Nk>(gnuplot, run[i], algo, pb);
-			}
+				if(run[i].pbtree)
+				{
+					srand(run[i].seed);
+					PbFunction pb(run[i].n, run[i].depthplus, run[i].depthmin);
+					GeneratorIAIndFunction gen(run[i].n, run[i].maxsizetree, run[i].initdepth);
+					Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
 
-			//MAXSAT
+					calculate<IndFunction,PbFunction>(gnuplot, run[i], algo, pb);
+				}
 
-			if(run[i].maxsat)
-			{
-				srand(run[i].seed);
-				MaxSat pb(run[i].pbfile);
-				GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
-				Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
-				run[i].n = pb.getN();
+				//NK
 
-				calculate<IndFunction,MaxSat>(gnuplot, run[i], algo, pb);
+				else if(run[i].nk)
+				{
+					srand(run[i].seed);
+					Nk pb(run[i].pbfile);
+					GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
+					Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+					run[i].n = pb.getN();
+
+					calculate<IndFunction,Nk>(gnuplot, run[i], algo, pb);
+				}
+
+				//MAXSAT
+
+				else if(run[i].maxsat)
+				{
+					srand(run[i].seed);
+					MaxSat pb(run[i].pbfile);
+					GeneratorIAIndFunction gen(pb.getN(), run[i].maxsizetree, run[i].initdepth);
+					Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+					run[i].n = pb.getN();
+
+					calculate<IndFunction,MaxSat>(gnuplot, run[i], algo, pb);
+				}
 			}
 		}
 	}
@@ -435,6 +480,92 @@ void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 }
 
 template<class Indiv, class PB>
+void freq(opt run, PB& pb, Indiv& s)
+{
+	std::vector<VectorBool> maxPb;
+	std::vector<unsigned int> freqPb;
+
+	GeneratorROOneMax genom(run.n);
+
+	for(unsigned int i(0); i < 100; ++i)
+	{
+		FixedSizeDescent<VectorBool> ls(pb, genom);
+		VectorBool tmp = ls.solve();
+
+		bool add = true;
+		for(unsigned int i(0); i < maxPb.size(); ++i)
+		{
+			if(tmp == maxPb[i])
+			{
+				++freqPb[i];
+				add = false;
+			}
+		}
+		if(add)
+		{
+			maxPb.push_back(tmp);
+			freqPb.push_back(1);
+		}
+	}
+
+
+	std::vector<VectorBool> maxS;
+	std::vector<unsigned int> freqS;
+
+	for(unsigned int i(0); i < 100; ++i)
+	{
+		FixedSizeDescent<VectorBool> ls(s, genom);
+		VectorBool tmp = ls.solve();
+
+		bool add = true;
+		for(unsigned int i(0); i < maxS.size(); ++i)
+		{
+			if(tmp == maxS[i])
+			{
+				++freqS[i];
+				add = false;
+			}
+		}
+		if(add)
+		{
+			maxS.push_back(tmp);
+			freqS.push_back(1);
+		}
+	}
+
+
+	std::ofstream out(run.out + "-freq.dat");
+	out << std::setw(35) << "Fonction objectif" << "          " << std::setw(55) << "Fonction trouvee" << std::endl;
+	out << std::setw(15) << "Fitness" << "     " << std::setw(15) << "Frequence" << "          ";
+	out << std::setw(15) << "Fitness" << "     " << std::setw(15) << "Frequence" << std::endl;
+
+	float meanPb = 0.;
+	float meanS = 0.;
+
+	for(unsigned int i(0); i < maxPb.size() || i < maxS.size(); ++i)
+	{
+		if(i < maxPb.size())
+		{
+			out << std::setw(15) << maxPb[i].getScore() << "     " << std::setw(15) << freqPb[i] << "          ";
+			meanPb += maxPb[i].getScore() * freqPb[i];
+		}
+		else
+		{
+			out << std::string(' ', 45);
+		}
+		if(i < maxS.size())
+		{
+			float tmp = pb.evaluate(maxS[i]);
+			out << std::setw(15) << tmp << "     " << std::setw(15) << freqS[i];
+			meanS += tmp * freqS[i];
+		}
+		out << std::endl;
+	}
+
+	out << std::setw(35) << "Fitness moyenne : " + std::to_string(meanPb/100.) << "          " << std::setw(55) << "Fitness moyenne : " + std::to_string(meanS/100.) << std::endl;
+}
+
+template<class Indiv, class PB>
 void calculate(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb)
 {
 	Indiv s = algo.solve();
@@ -468,6 +599,8 @@ void calculate(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb)
 	{
 		correlation<Indiv,PB>(gnuplot, run, pb, s);
 	}
+
+	freq<Indiv,PB>(run, pb, s);
 }
 
 

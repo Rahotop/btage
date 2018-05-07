@@ -36,7 +36,10 @@ struct opt
 		Rmeansize(10),
 		out("out"),
 		seed(rand()),
-		execute(false) {}
+		execute(false),
+		functionarray(false),
+		maxdepth(5),
+		initwidth(20) {}
 
 	bool pbtree;
 	bool nk;
@@ -65,6 +68,9 @@ struct opt
 	std::string out;
 	unsigned int seed;
 	bool execute;
+	bool functionarray;
+	unsigned int maxdepth;
+	unsigned int initwidth;
 };
 
 std::vector<opt> getopt(int argc, char **argv);

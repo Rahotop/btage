@@ -1,6 +1,7 @@
 #include "generator.hpp"
 #include "generatoria/generatoria.hpp"
 #include "generatoria/generatoriaindfunction/generatoriaindfunction.hpp"
+#include "generatoria/generatoriaindarray/generatoriaindarray.hpp"
 #include "generatoria/generatoriaonemax/generatoriaonemax.hpp"
 #include "generatorro/generatorro.hpp"
 #include "generatorro/generatorroonemax/generatorroonemax.hpp"

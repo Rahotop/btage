@@ -48,6 +48,16 @@ unsigned int VectorBool::dist(const VectorBool& v) const
 	return tmp;
 }
 
+bool VectorBool::operator==(const VectorBool& v)
+{
+	for(unsigned int i(0); i < m_ind.size(); ++i)
+	{
+		if(m_ind[i] != v.m_ind[i])
+			return false;
+	}
+	return true;
+}
+
 
 
 

@@ -5,6 +5,7 @@ g++ -Wall -Wextra -pedantic -std=c++11 -O3 -o vh.btage\
 	solver/plot/*.cpp \
 	solver/complete/vectorboolcomplete/*.cpp \
 	solver/function/*.cpp \
+	solver/function/functionarray/*.cpp \
 	solver/function/functiontree/*.cpp \
 	solver/function/problems/*.cpp \
 	solver/function/problems/onemax/*.cpp \
@@ -17,9 +18,11 @@ g++ -Wall -Wextra -pedantic -std=c++11 -O3 -o vh.btage\
 	solver/generator/generatoria/*.cpp \
 	solver/generator/generatoria/generatoriaonemax/*.cpp \
 	solver/generator/generatoria/generatoriaindfunction/*.cpp \
+	solver/generator/generatoria/generatoriaindarray/*.cpp \
 	solver/individual/*.cpp \
 	solver/individual/vectorbool/*.cpp \
 	solver/individual/indfunction/*.cpp \
+	solver/individual/indarray/*.cpp \
 	solver/localsearch/*.cpp \
 	solver/localsearch/descent/*.cpp \
 	solver/localsearch/descent/fixedsizedescent/*.cpp \
@@ -28,5 +31,4 @@ g++ -Wall -Wextra -pedantic -std=c++11 -O3 -o vh.btage\
 	solver/localsearch/descent/fixedsizedescent/fixedsizedescentinc/*.cpp \
 	solver/localsearch/descent/fixedsizedescent/fixedsizedescentdist/*.cpp \
 	solver/localsearch/ils/*.cpp \
-	solver/localsearch/ils/fixedsizeils/*.cpp \
-	-fopenmp
+	solver/localsearch/ils/fixedsizeils/*.cpp

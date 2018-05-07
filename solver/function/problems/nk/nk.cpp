@@ -67,6 +67,22 @@ float Nk::evaluate(IndFunction& s)
 	return tmp;
 }
 
+float Nk::evaluate(IndArray& s)
+{
+	GeneratorROOneMax gen(m_n);
+	FunctionArray fn = s.getFunction();
+	FixedSizeDescentInc<VectorBool> d(fn, gen);
+
+	float tmp = 0.;
+	for(unsigned int i(0); i < 10; ++i)
+	{
+		VectorBool v = d.solve(); 
+		tmp += evaluate(v);
+	}
+	tmp /= 10.;
+	return tmp;
+}
+
 unsigned int Nk::getN() const
 {
 	return m_n;
