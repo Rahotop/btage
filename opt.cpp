@@ -178,7 +178,7 @@ std::vector<opt> getopt(std::vector<std::string> args)
 		}
 		else if(args[i] == "-exe")
 		{
-			unsigned int id = std::stoi(args[i+1]);
+			unsigned int id = std::stoi(args[i+1]) - 1;
 			tmp[id].execute = true;
 			i += 2;
 		}
