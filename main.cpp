@@ -7,7 +7,7 @@
 #include "solver/all.hpp"
 #include "opt.hpp"
 
-#define VERSION 5
+#define VERSION 6
 
 std::string getSettings(opt run);
 void plot3d(std::string path, opt run);
