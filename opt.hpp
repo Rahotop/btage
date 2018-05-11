@@ -31,6 +31,7 @@ struct opt
 		Rgraphmean(false),
 		links(false),
 		correlation(false),
+		freq(false),
 		meansize(10),
 		agregatesize(10),
 		Rmeansize(10),
@@ -62,6 +63,7 @@ struct opt
 	bool Rgraphmean;
 	bool links;
 	bool correlation;
+	bool freq;
 	unsigned int meansize;
 	unsigned int agregatesize;
 	unsigned int Rmeansize;

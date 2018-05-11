@@ -24,7 +24,7 @@ void links(opt run, PB& pb, Indiv& s);
 template<class Indiv, class PB>
 void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s);
 template<class Indiv, class PB>
-void freq(opt run, PB& pb, Indiv& s);
+void freq(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s);
 template<class Indiv, class PB>
 void calculate(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb);
 
@@ -283,8 +283,6 @@ void graphmean(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 	FixedSizeILS<VectorBool> ls3(pb,genom,1000,15);
 	VectorBool best = ls3.solve();
 
-
-
 	Plot<VectorBool> graph(pb, run.out + "-mean-graph.dat", run.out + "-gnuplot-mean.sh");
 
 	graph.add(meanpb);
@@ -480,7 +478,7 @@ void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 }
 
 template<class Indiv, class PB>
-void freq(opt run, PB& pb, Indiv& s)
+void freq(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 {
 	std::vector<VectorBool> maxPb;
 	std::vector<unsigned int> freqPb;
@@ -511,6 +509,7 @@ void freq(opt run, PB& pb, Indiv& s)
 
 	std::vector<VectorBool> maxS;
 	std::vector<unsigned int> freqS;
+	std::vector<bool> isOptimum;
 
 	for(unsigned int i(0); i < 100; ++i)
 	{
@@ -530,6 +529,9 @@ void freq(opt run, PB& pb, Indiv& s)
 		{
 			maxS.push_back(tmp);
 			freqS.push_back(1);
+
+			Descent<VectorBool> ls(pb,genom);
+			isOptimum.push_back(ls.isOptimum(tmp));
 		}
 	}
 
@@ -537,7 +539,7 @@ void freq(opt run, PB& pb, Indiv& s)
 	std::ofstream out(run.out + "-freq.dat");
 	out << std::setw(35) << "Fonction objectif" << "          " << std::setw(55) << "Fonction trouvee" << std::endl;
 	out << std::setw(15) << "Fitness" << "     " << std::setw(15) << "Frequence" << "          ";
-	out << std::setw(15) << "Fitness" << "     " << std::setw(15) << "Frequence" << std::endl;
+	out << std::setw(15) << "Fitness" << "     " << std::setw(15) << "Frequence" << "     " << std::setw(15) << "Opt loc f_obj" << std::endl;
 
 	float meanPb = 0.;
 	float meanS = 0.;
@@ -556,13 +558,40 @@ void freq(opt run, PB& pb, Indiv& s)
 		if(i < maxS.size())
 		{
 			float tmp = pb.evaluate(maxS[i]);
-			out << std::setw(15) << tmp << "     " << std::setw(15) << freqS[i];
+			out << std::setw(15) << tmp << "     " << std::setw(15) << freqS[i] << "     " << std::setw(15) << isOptimum[i];
 			meanS += tmp * freqS[i];
 		}
 		out << std::endl;
 	}
 
 	out << std::setw(35) << "Fitness moyenne : " + std::to_string(meanPb/100.) << "          " << std::setw(55) << "Fitness moyenne : " + std::to_string(meanS/100.) << std::endl;
+
+	std::ofstream out2(run.out + "-freq-hamming.dat");
+
+	for(unsigned int i(0); i < maxS.size(); ++i)
+	{
+		for(unsigned int j(0); j < maxS.size(); ++j)
+		{
+			unsigned int tmp = maxS[i].dist(maxS[j]);
+			unsigned int count = 0;
+			for(unsigned int k(0); k < maxS.size(); ++k)
+			{
+				count += (tmp == maxS[i].dist(maxS[k]));
+			}
+			out2 << "0 0" << std::endl << tmp << " " << count << std::endl;
+		}
+	}
+
+	std::ofstream plot(run.out + "-gnuplot-freq.sh");
+	plot << "set terminal jpeg size 2000,1000" << std::endl;
+	plot << "set output \"" << run.out << "-freq-graph.jpg\"" << std::endl;
+	plot << "set title 'Frequence des maxima locaux en fonction de leur distances relatives'" << std::endl;
+	plot << "set xlabel 'Distance de Hamming'" << std::endl;
+	plot << "set ylabel 'Frequence'" << std::endl;
+	plot << "set nokey" << std::endl;
+	plot << "plot \"" << run.out << "-freq-hamming.dat\" using 1:2 with lines" << std::endl;
+
+	gnuplot << "gnuplot " << run.out << "-gnuplot-freq.sh" << std::endl;
 }
 
 template<class Indiv, class PB>
@@ -600,7 +629,10 @@ void calculate(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb)
 		correlation<Indiv,PB>(gnuplot, run, pb, s);
 	}
 
-	freq<Indiv,PB>(run, pb, s);
+	if(run.freq)
+	{
+		freq<Indiv,PB>(gnuplot, run, pb, s);
+	}
 }
 
 

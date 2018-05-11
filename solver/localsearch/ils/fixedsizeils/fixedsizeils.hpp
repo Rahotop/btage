@@ -62,6 +62,7 @@ class FixedSizeILS : public ILS<Indiv>
 			{
 				ILS<Indiv>::iterate({sol.getScore()});
 				sol = ILS<Indiv>::m_gen.near(sol, rand()%n);
+				sol.setScore(ILS<Indiv>::m_fn.evaluate(sol));
 
 				if(sol.getScore() > best.getScore())
 					best = sol;

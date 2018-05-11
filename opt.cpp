@@ -99,6 +99,20 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().newop = std::stof(args[i+1]);
 			i += 2;
 		}
+		else if(args[i] == "-ccmn")
+		{
+			unsigned int ratio = std::stoi(args[i+1]);
+
+			tmp.back().newop = (float)(ratio % 10)/10.;
+			ratio /= 10;
+			tmp.back().mutation = (float)(ratio % 10)/10.;
+			ratio /= 10;
+			tmp.back().copy = (float)(ratio % 10)/10.;
+			ratio /= 10;
+			tmp.back().cross = (float)(ratio % 10)/10.;
+
+			i += 2;
+		}
 		else if(args[i] == "-graphalgogen")
 		{
 			tmp.back().graphalgogen = true;
@@ -131,6 +145,26 @@ std::vector<opt> getopt(std::vector<std::string> args)
 		{
 			tmp.back().correlation = true;
 			++i;
+		}
+		else if(args[i] == "-freq")
+		{
+			tmp.back().freq = true;
+			++i;
+		}
+		else if(args[i] == "-all")
+		{
+			tmp.back().graphalgogen = true;
+			tmp.back().graphmean = true;
+			tmp.back().graphagregate = true;
+			tmp.back().Rgraphmean = true;
+			tmp.back().links = true;
+			tmp.back().correlation = true;
+			tmp.back().freq = true;
+
+			tmp.back().meansize = std::stoi(args[i+1]);
+			tmp.back().agregatesize = std::stoi(args[i+1]);
+			tmp.back().Rmeansize = std::stoi(args[i+1]);
+			i += 2;
 		}
 		else if(args[i] == "-out")
 		{

@@ -54,6 +54,30 @@ class Descent : public LocalSearch<Indiv>
 		return sol;
 	}
 
+	bool isOptimum(const Indiv& ind)
+	{
+		Indiv sol = ind;
+		sol.setScore(LocalSearch<Indiv>::m_fn.evaluate(sol));
+
+		unsigned int n = LocalSearch<Indiv>::m_gen.nearSize(sol);
+		std::vector<unsigned int> near;
+		for(unsigned int i(0); i < n; ++i)
+			near.push_back(i);
+		std::random_shuffle(near.begin(),near.end());
+
+		for(unsigned int i(0); i < n; ++i)
+		{
+			Indiv tmp = LocalSearch<Indiv>::m_gen.near(sol, near[i]);
+			tmp.setScore(LocalSearch<Indiv>::m_fn.evaluate(tmp));
+
+			if(tmp.getScore() > sol.getScore())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private:
 
 
