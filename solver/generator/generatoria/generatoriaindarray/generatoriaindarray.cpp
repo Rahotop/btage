@@ -45,24 +45,31 @@ void GeneratorIAIndArray::crossover(const std::vector<IndArray>& pop, std::vecto
 void GeneratorIAIndArray::mutation(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const
 {
 	newgen[index] = pop[rand()%pop.size()];
-	if(!(rand()%2))
+	if(!(rand()%4))
 	{
 		newgen[index].addRandom();
 		newgen[index].simplification();
 	}
-	else if(!(rand()%3))
+	else if(newgen[index].width())
 	{
-		newgen[index].reconstruct(rand()%newgen[index].width());
-		newgen[index].simplification();
-	}
-	else if(!(rand()%2))
-	{
-		newgen[index].erase(rand()%newgen[index].width());
+		if(!(rand()%3))
+		{
+			newgen[index].reconstruct(rand()%newgen[index].width());
+			newgen[index].simplification();
+		}
+		else if(!(rand()%2))
+		{
+			newgen[index].erase(rand()%newgen[index].width());
+		}
+		else
+		{
+			newgen[index].mutate(rand()%newgen[index].width());
+			newgen[index].simplification();
+		}
 	}
 	else
 	{
-		newgen[index].mutate(rand()%newgen[index].width());
-		newgen[index].simplification();
+		newgen[index].addRandom();
 	}
 }
 
