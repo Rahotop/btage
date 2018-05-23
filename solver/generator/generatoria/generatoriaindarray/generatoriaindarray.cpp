@@ -22,6 +22,18 @@ IndArray GeneratorIAIndArray::generate() const
 
 void GeneratorIAIndArray::crossover(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const
 {
+	if(rand()%2)
+	{
+		crossuni(pop,newgen,index);
+	}
+	else
+	{
+		crossrand(pop,newgen,index);
+	}
+}
+
+void GeneratorIAIndArray::crossuni(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const
+{
 	unsigned int p1 = rand()%pop.size();
 	unsigned int p2 = rand()%pop.size();
 
@@ -37,6 +49,28 @@ void GeneratorIAIndArray::crossover(const std::vector<IndArray>& pop, std::vecto
 	for(unsigned int i(0); i < pop[p1].getFunction().width(); ++i)
 	{
 		f.add(pop[p1], i);
+	}
+	newgen[index] = IndArray(f);
+	newgen[index].simplification();
+}
+
+void GeneratorIAIndArray::crossrand(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const
+{
+	unsigned int p1 = rand()%pop.size();
+	unsigned int p2 = rand()%pop.size();
+
+	FunctionArray f(m_maxWidth,m_maxDepth,0,m_initDepth,m_n,{1,7,9,11,13});
+
+	for(unsigned int i(0); i < pop[p1].getFunction().width() && i < pop[p2].getFunction().width(); ++i)
+	{
+		if(rand()%2)
+			f.add(pop[p1], rand()%pop[p1].width());
+		else
+			f.add(pop[p2], rand()%pop[p2].width());
+	}
+	for(unsigned int i(0); i < pop[p1].getFunction().width(); ++i)
+	{
+		f.add(pop[p1], rand()%pop[p1].width());
 	}
 	newgen[index] = IndArray(f);
 	newgen[index].simplification();

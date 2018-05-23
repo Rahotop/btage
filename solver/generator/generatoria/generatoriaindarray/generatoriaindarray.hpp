@@ -18,6 +18,9 @@ class GeneratorIAIndArray : public GeneratorIA<IndArray>
 	void crossover(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const;
 	void mutation(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const;
 
+	void crossuni(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const;
+	void crossrand(const std::vector<IndArray>& pop, std::vector<IndArray>& newgen, unsigned int index) const;
+
 	private:
 
 	unsigned int m_maxWidth;
