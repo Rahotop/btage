@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "../solver.hpp"
 #include "../generator/generatoria/generatoria.hpp"
+#include "../individual/indarray/indarray.hpp"
 
 template<class Indiv>
 class Algogen : public Solver<Indiv>
@@ -48,7 +49,6 @@ class Algogen : public Solver<Indiv>
 			copy = m_nbInd-1;
 
 			unsigned int avsize = 0;
-			#pragma omp parallel for
 			for(unsigned int i = 0; i < m_nbInd; ++i)
 			{
 				float tmp = distribution(generator);
@@ -58,7 +58,6 @@ class Algogen : public Solver<Indiv>
 				}
 				else if(tmp < m_pcopy)
 				{
-					#pragma omp critical
 					newgen[i] = pop[copy--];
 				}
 				else if(tmp < m_pmut)
@@ -69,9 +68,9 @@ class Algogen : public Solver<Indiv>
 				{
 					newgen[i] = m_gen.generate();
 				}
+
 				newgen[i].setScore(Solver<Indiv>::m_fn.evaluate(newgen[i]));
 
-				#pragma omp atomic
 				avsize += newgen[i].getFunction().size();
 			}
 			std::sort(newgen.begin(),newgen.end());
@@ -96,6 +95,7 @@ class Algogen : public Solver<Indiv>
 										pop[i].getScore()}, 1);
 			}
 
+			best.setScore(Solver<Indiv>::m_fn.evaluate(best));
 			if(best < pop.back())
 				best = pop.back();
 		}
@@ -113,5 +113,6 @@ class Algogen : public Solver<Indiv>
 	float m_pmut;
 	float m_paa;//architecture altering
 };
+
 
 #endif

@@ -467,6 +467,23 @@ bool FunctionArray::isfull() const
 	return m_width == m_maxWidth;
 }
 
+float FunctionArray::operator==(const FunctionArray& f)
+{
+	unsigned int tmp = 0;
+	for(unsigned int i(0); i < m_width; ++i)
+	{
+		for(unsigned int j(0); j < f.m_width; ++j)
+		{
+			if(areSubsEqual(f,i*m_maxsize,j*f.m_maxsize))
+			{
+				++tmp;
+				break;
+			}
+		}
+	}
+	return (float)tmp / (float)m_width;
+}
+
 unsigned int FunctionArray::countOP(unsigned int op) const
 {
 	unsigned int sum = 0;
@@ -724,6 +741,20 @@ bool FunctionArray::areSubsEqual(unsigned int index1, unsigned int index2, unsig
 	}
 
 	return areSubsEqual(index1,index2,offset1*2,offset2*2) && areSubsEqual(index1,index2,offset1*2+1,offset2*2+1);
+}
+
+bool FunctionArray::areSubsEqual(const FunctionArray& f, unsigned int index1, unsigned int index2, unsigned int offset1, unsigned int offset2) const
+{
+	if((m_op[index1+offset1] != f.m_op[index2+offset2]) || (m_not[index1+offset1] != f.m_not[index2+offset2]))
+	{
+		return false;
+	}
+	if(m_op[index1+offset1] > 15)
+	{
+		return true;
+	}
+
+	return areSubsEqual(f,index1,index2,offset1*2,offset2*2) && areSubsEqual(f,index1,index2,offset1*2+1,offset2*2+1);
 }
 
 bool FunctionArray::areSubsOpposite(unsigned int index1, unsigned int index2, unsigned int offset1, unsigned int offset2) const

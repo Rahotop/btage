@@ -151,6 +151,11 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().freq = true;
 			++i;
 		}
+		else if(args[i] == "-diversity")
+		{
+			tmp.back().diversity = true;
+			++i;
+		}
 		else if(args[i] == "-all")
 		{
 			tmp.back().graphalgogen = true;
@@ -160,6 +165,7 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().links = true;
 			tmp.back().correlation = true;
 			tmp.back().freq = true;
+			tmp.back().diversity = true;
 
 			tmp.back().meansize = std::stoi(args[i+1]);
 			tmp.back().agregatesize = std::stoi(args[i+1]);

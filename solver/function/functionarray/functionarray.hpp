@@ -34,6 +34,7 @@ class FunctionArray : public Function<VectorBool>
 	unsigned int size() const;
 	unsigned int width() const;
 	bool isfull() const;
+	float operator==(const FunctionArray& f);
 
 	unsigned int countOP(unsigned int op) const;
 	void varLinks(std::ostream& o) const;
@@ -53,6 +54,7 @@ class FunctionArray : public Function<VectorBool>
 	void updateIsVarIn(unsigned int index);
 	int mutate(unsigned int node, int thisone, unsigned int offset = 1);
 	bool areSubsEqual(unsigned int index1, unsigned int index2, unsigned int offset1 = 1, unsigned int offset2 = 1) const;
+	bool areSubsEqual(const FunctionArray& f, unsigned int index1, unsigned int index2, unsigned int offset1 = 1, unsigned int offset2 = 1) const;
 	bool areSubsOpposite(unsigned int index1, unsigned int index2, unsigned int offset1 = 1, unsigned int offset2 = 1) const;
 
 	unsigned int m_maxWidth;

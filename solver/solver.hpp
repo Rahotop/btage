@@ -174,6 +174,11 @@ class Solver
 		return m_it[id];
 	}
 
+	unsigned int getWidth(unsigned int id = 0) const
+	{
+		return m_save[id].size();
+	}
+
 	const std::vector<std::list<float>>& getSave(unsigned int id = 0) const
 	{
 		return m_save[id];

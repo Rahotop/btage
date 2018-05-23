@@ -48,14 +48,14 @@ void GeneratorIAIndArray::mutation(const std::vector<IndArray>& pop, std::vector
 	if(!(rand()%4))
 	{
 		newgen[index].addRandom();
-		newgen[index].simplification();
+		//newgen[index].simplification();
 	}
 	else if(newgen[index].width())
 	{
 		if(!(rand()%3))
 		{
 			newgen[index].reconstruct(rand()%newgen[index].width());
-			newgen[index].simplification();
+			//newgen[index].simplification();
 		}
 		else if(!(rand()%2))
 		{
@@ -64,7 +64,7 @@ void GeneratorIAIndArray::mutation(const std::vector<IndArray>& pop, std::vector
 		else
 		{
 			newgen[index].mutate(rand()%newgen[index].width());
-			newgen[index].simplification();
+			//newgen[index].simplification();
 		}
 	}
 	else

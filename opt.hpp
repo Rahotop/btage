@@ -32,6 +32,7 @@ struct opt
 		links(false),
 		correlation(false),
 		freq(false),
+		diversity(false),
 		meansize(10),
 		agregatesize(10),
 		Rmeansize(10),
@@ -64,6 +65,7 @@ struct opt
 	bool links;
 	bool correlation;
 	bool freq;
+	bool diversity;
 	unsigned int meansize;
 	unsigned int agregatesize;
 	unsigned int Rmeansize;

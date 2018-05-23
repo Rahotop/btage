@@ -11,6 +11,7 @@
 
 std::string getSettings(opt run);
 void plot3d(std::string path, opt run);
+void plot3d(opt run, std::string path);
 template<class Indiv, class PB>
 void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb);
 template<class Indiv, class PB>
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
 
 	std::vector<opt> run = getopt(argc, argv);
 
-	std::ofstream gnuplot("gnuplot.sh", std::ios::ate);
+	std::ofstream gnuplot("gnuplot.sh", std::ios::app);
 
 	for(unsigned int i(0); i < run.size(); ++i)
 	{
@@ -211,29 +212,48 @@ void plot3d(std::string path, opt run)
 
 	plot << "set terminal jpeg size 2000,1000" << std::endl;
 	plot << "set title \'Ratios of operators in population\'" << std::endl;
-	plot << "set dgrid3d 100,100" << std::endl;
-	plot << "set zrange [0:" << run.maxsizetree << "]" << std::endl;
 	plot << "set xlabel \'population\'" << std::endl;
-	plot << "set ylabel \'iterations\'" << std::endl;
-	plot << "set zlabel \'nbOp\'" << std::endl;
+	plot << "set ylabel \'nbOp\'" << std::endl;
 	plot << "set key outside" << std::endl;
-	plot << "set hidden3d" << std::endl;
-	plot << "set view 20, 50" << std::endl;
 	plot << "set output \"" << run.out << "-0ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:8 with impulses lw 10 title 'Size'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:8 with impulses lw 10 title 'Size'" << std::endl;
 	plot << "set output \"" << run.out << "-1ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:3 with impulses lw 10 title 'Scal'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:3 with impulses lw 10 title 'Scal'" << std::endl;
 	plot << "set output \"" << run.out << "-2ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:4 with impulses lw 10 title 'Equal'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:4 with impulses lw 10 title 'Equal'" << std::endl;
 	plot << "set output \"" << run.out << "-3ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:5 with impulses lw 10 title 'Max'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:5 with impulses lw 10 title 'Max'" << std::endl;
 	plot << "set output \"" << run.out << "-4ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:6 with impulses lw 10 title 'Min'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:6 with impulses lw 10 title 'Min'" << std::endl;
 	plot << "set output \"" << run.out << "-5ratios-graph.jpg" << "\"" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:7 with impulses lw 10 title 'Plus'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:7 with impulses lw 10 title 'Plus'" << std::endl;
 	plot << "set output \"" << run.out << "-6ratios-graph.jpg" << "\"" << std::endl;
-	plot << "set autoscale z" << std::endl;
-	plot << "splot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:1:9 with impulses lw 10 title 'Fitness'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:9 with impulses lw 10 title 'Fitness'" << std::endl;
+}
+
+void plot3d(opt run, std::string path)
+{
+	std::ofstream plot(path);
+
+	plot << "set terminal jpeg size 2000,1000" << std::endl;
+	plot << "set title \'Ratios of operators in population\'" << std::endl;
+	plot << "set xlabel \'population\'" << std::endl;
+	plot << "set ylabel \'nbOp\'" << std::endl;
+	plot << "set key outside" << std::endl;
+	plot << "set output \"" << run.out << "-0ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:8 with lines title 'Size'" << std::endl;
+	plot << "set output \"" << run.out << "-1ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:3 with lines title 'AND'" << std::endl;
+	plot << "set output \"" << run.out << "-2ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:4 with lines title 'OR'" << std::endl;
+	plot << "set output \"" << run.out << "-3ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:5 with lines title 'EQUAL'" << std::endl;
+	plot << "set output \"" << run.out << "-4ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:6 with lines title '<-'" << std::endl;
+	plot << "set output \"" << run.out << "-5ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:7 with lines title '->'" << std::endl;
+	plot << "set output \"" << run.out << "-6ratios-graph.jpg" << "\"" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:9 with lines title 'Fitness'" << std::endl;
 }
 
 template<class Indiv, class PB>
@@ -252,6 +272,50 @@ void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb)
 
 	plot3d(run.out + "-gnuplot-ratios.sh", run);
 	gnuplot << "gnuplot " << run.out << "-gnuplot-ratios.sh" << std::endl;
+}
+
+template<class Indiv, class PB>
+void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<IndArray>& algo, PB& pb)
+{
+	srand(run.seed);
+	Plot<IndArray> graph(pb, run.out + "-algogen-graph.dat", run.out + "-gnuplot-algogen.sh");
+	graph.add(algo, {"fitness","size","avsize","AND","OR","EQUAL","<-","->"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
+
+	graph.save(run.out + "-algogen-graph.jpg", "fitness as a function of iterations "+getSettings(run));
+
+	gnuplot << "gnuplot " << run.out << "-gnuplot-algogen.sh" << std::endl;
+
+	std::ofstream ratio(run.out + "-ratios.dat");
+	ratio << algo(1, run.nbind);
+
+	plot3d(run, run.out + "-gnuplot-ratios.sh");
+	gnuplot << "gnuplot " << run.out << "-gnuplot-ratios.sh" << std::endl;
+
+	if(run.diversity)
+	{
+		std::ofstream diversity(run.out + "-diversity.dat");
+		unsigned int width = algo.getWidth(2);
+		diversity << algo(2);
+
+		std::ofstream diversityPlot(run.out + "-gnuplot-diversity.sh");
+
+		diversityPlot << "set terminal jpeg size 2000,1000" << std::endl;
+		diversityPlot << "set output \"" << run.out << "-diversity.jpg\"" << std::endl;
+		diversityPlot << "set title \'diversity\'" << std::endl;
+		diversityPlot << "set xlabel \'iteration\'" << std::endl;
+		diversityPlot << "set ylabel \'alike\'" << std::endl;
+		diversityPlot << "unset key" << std::endl;
+		diversityPlot << "plot ";
+		for(unsigned int i(0); i < width; ++i)
+		{
+			diversityPlot << "\"" << run.out << "-diversity.dat\" using 1:" << 2+i << " with lines lt rgb \"gray\"";
+			if(i < width-1)
+				diversityPlot << ",\\";
+			diversityPlot << std::endl;
+		}
+
+		gnuplot << "gnuplot " << run.out << "-gnuplot-diversity.sh" << std::endl;
+	}
 }
 
 template<class Indiv, class PB>
@@ -445,7 +509,7 @@ void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 
 	graph.save(run.out + "-correlation-paths-graph.jpg", "Correlation");
 
-	std::ofstream plotcorr((run.out + "-gnuplot-correlation-paths.sh").c_str());
+	std::ofstream plotcorr((run.out + "-gnuplot-correlation-paths.sh").c_str(), std::ios_base::trunc);
 
 	plotcorr << "set terminal jpeg size 2000,1000" << std::endl;
 	plotcorr << "set output \"" << run.out << "-correlation-paths-graph.jpg" << "\"" << std::endl;
