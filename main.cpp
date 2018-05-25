@@ -488,7 +488,7 @@ void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 
 
 
-	Plot<VectorBool> graph(pb, run.out + "-correlation-paths.dat", run.out + "-gnuplot-correlation-paths.sh");
+	Plot<VectorBool> graph(pb, run.out + "-correlation-paths.dat", "");
 
 	for(unsigned int i(0); i < 10; ++i)
 	{
@@ -507,7 +507,7 @@ void correlation(std::ofstream& gnuplot, opt run, PB& pb, Indiv& s)
 		graph.add(ls, {"x","y"}, {"",""});
 	}
 
-	graph.save(run.out + "-correlation-paths-graph.jpg", "Correlation");
+	graph.save();
 
 	std::ofstream plotcorr((run.out + "-gnuplot-correlation-paths.sh").c_str(), std::ios_base::trunc);
 

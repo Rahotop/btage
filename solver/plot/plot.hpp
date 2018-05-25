@@ -87,6 +87,11 @@ class Plot : public Solver<Indiv>
 		}
 	}
 
+	void save()
+	{
+		m_data << *this;
+	}
+
 	private:
 
 	std::ofstream m_data;
