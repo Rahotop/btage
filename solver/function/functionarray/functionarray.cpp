@@ -278,7 +278,7 @@ bool FunctionArray::evaluate(VectorBool& s, unsigned int node, unsigned int offs
 		return s[tmp-16] != m_not[node+offset];
 	}
 
-	return ((tmp << (evaluate(s, node, offset*2)*2+evaluate(s, node, offset*2+1))) >> 3) != m_not[node+offset];
+	return (bool)((tmp << (evaluate(s, node, offset*2)*2+evaluate(s, node, offset*2+1))) >> 3) != m_not[node+offset];
 }
 
 float FunctionArray::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned int node)
