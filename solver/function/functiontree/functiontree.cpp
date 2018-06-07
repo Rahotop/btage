@@ -535,25 +535,25 @@ float FunctionTree::evaluate(VectorBool& s, unsigned int node)
 		tmp = m_scal[node]*evaluate(s,m_child1[node]);
 	}
 	else if(m_op[node] == 3)
-	{/*
+	{
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
-		*/tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
+		//tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
 	}
 	else if(m_op[node] == 4)
-	{/*
+	{
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
-		*/tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+		//tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
 	}
 	else if(m_op[node] == 5)
-	{/*
+	{
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
-		*/tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+		//tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
 	}
 	else if(m_op[node] == 6)
 	{
@@ -766,24 +766,24 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
-		tmp = c1 == c2;
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
+		//tmp = c1 == c2;
 	}
 	else if(m_op[node] == 4)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
-		tmp = std::max(c1, c2);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
+		//tmp = std::max(c1, c2);
 	}
 	else if(m_op[node] == 5)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 		
-		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
-		tmp = std::min(c1, c2);
+		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
+		//tmp = std::min(c1, c2);
 	}
 	else if(m_op[node] == 6)
 	{
