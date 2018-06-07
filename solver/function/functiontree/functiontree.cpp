@@ -801,13 +801,13 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 unsigned int FunctionTree::countOP(unsigned int op) const
 {
 	unsigned int tmp = 0;
-	//if(op < 3)
+	if(op < 3)
 	{
 		for(unsigned int i(0); i < m_maxsize; ++i)
 		{
 			tmp += m_isused[i] && (m_op[i] == op);
 		}
-	}/*
+	}
 	else if(op > 5)
 	{
 		for(unsigned int i(0); i < m_maxsize; ++i)
@@ -821,7 +821,7 @@ unsigned int FunctionTree::countOP(unsigned int op) const
 		{
 			tmp += m_isused[i] && (m_op[i] == op) && !isOPinSubTree(6,i);
 		}
-	}*/
+	}
 	return tmp;
 }
 
