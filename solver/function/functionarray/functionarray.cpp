@@ -331,6 +331,37 @@ void FunctionArray::add(const FunctionArray& f, unsigned int index)
 	}
 }
 
+void FunctionArray::add(unsigned int var, bool varnot, float scal)
+{
+	if(!isfull())
+	{
+		m_op[m_width*m_maxsize+1] = var + 16;
+		m_not[m_width*m_maxsize+1] = varnot;
+		m_scal[m_width] = scal;
+		updateIsVarIn(m_width);
+		++m_width;
+	}
+}
+
+void FunctionArray::add(float scal, unsigned int op, bool opnot, unsigned int var1, bool var1not, unsigned int var2, bool var2not)
+{
+	if(!isfull())
+	{
+		m_op[m_width*m_maxsize+1] = op;
+		m_not[m_width*m_maxsize+1] = opnot;
+		m_scal[m_width] = scal;
+
+		m_op[m_width*m_maxsize+2] = var1 + 16;
+		m_not[m_width*m_maxsize+2] = var1not;
+
+		m_op[m_width*m_maxsize+3] = var2 + 16;
+		m_not[m_width*m_maxsize+3] = var2not;
+
+		updateIsVarIn(m_width);
+		++m_width;
+	}
+}
+
 void FunctionArray::reconstruct(unsigned int index)
 {
 	construct(index*m_maxsize, rand()%2);

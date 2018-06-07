@@ -21,11 +21,14 @@ class PbFunction : public Problem<IndFunction>, public FunctionTree, public Prob
 	float evaluate(VectorBool& s);
 	float evaluate(IndArray& s);
 
+	unsigned long long getnbeval() const;
+
 	friend std::ostream& operator<<(std::ostream& o, const PbFunction& f);
 
 	private:
 
 	unsigned int m_n;
+	unsigned long long m_nbeval;
 };
 
 #endif

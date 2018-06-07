@@ -1,6 +1,6 @@
 #include "nk.hpp"
 
-Nk::Nk(const std::string& path) : m_n(0), m_k1(0), m_2k1(0), m_mat(nullptr), m_var(nullptr)
+Nk::Nk(const std::string& path) : m_n(0), m_k1(0), m_2k1(0), m_mat(nullptr), m_var(nullptr), m_nbeval(0)
 {
 	std::ifstream in(path.c_str());
 
@@ -36,6 +36,7 @@ Nk::~Nk()
 
 float Nk::evaluate(VectorBool& s)
 {
+	++m_nbeval;
 	float sum = 0.;
 	for(unsigned int i(0); i < m_n; ++i)
 	{
@@ -81,6 +82,11 @@ float Nk::evaluate(IndArray& s)
 	}
 	tmp /= 10.;
 	return tmp;
+}
+
+unsigned long long Nk::getnbeval() const
+{
+	return m_nbeval;
 }
 
 unsigned int Nk::getN() const

@@ -1,6 +1,6 @@
 #include "pbfunction.hpp"
 
-PbFunction::PbFunction(unsigned int n, unsigned int depth1, unsigned int depth2) : Problem<IndFunction>(), FunctionTree({depth1,1,depth2},{6,2,5},n), m_n(n)
+PbFunction::PbFunction(unsigned int n, unsigned int depth1, unsigned int depth2) : Problem<IndFunction>(), FunctionTree({depth1,1,depth2},{6,2,5},n), m_n(n), m_nbeval(0)
 {
 
 }
@@ -44,9 +44,14 @@ float PbFunction::evaluate(IndArray& s)
 
 float PbFunction::evaluate(VectorBool& s)
 {
+	++m_nbeval;
 	return FunctionTree::evaluate(s);
 }
 
+unsigned long long PbFunction::getnbeval() const
+{
+	return m_nbeval;
+}
 
 std::ostream& operator<<(std::ostream& o, const PbFunction& f)
 {

@@ -73,8 +73,8 @@ class FunctionTree : public Function<VectorBool>
 	bool *m_isused;
 	unsigned int m_n;
 
-	static std::default_random_engine s_gen;
-	static std::uniform_real_distribution<float> s_dist;
+	std::default_random_engine s_gen;
+	std::uniform_real_distribution<float> s_dist;
 };
 
 #endif

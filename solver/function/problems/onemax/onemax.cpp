@@ -1,6 +1,6 @@
 #include "onemax.hpp"
 
-OneMax::OneMax(unsigned int n) : m_n(n)
+OneMax::OneMax(unsigned int n) : m_n(n), m_nbeval(0)
 {
 
 }
@@ -12,6 +12,7 @@ OneMax::~OneMax()
 
 float OneMax::evaluate(VectorBool& s)
 {
+	++m_nbeval;
 	float tmp = 0.;
 	for(unsigned int i(0); i < s.size(); ++i)
 		tmp += s[i];
@@ -32,6 +33,11 @@ float OneMax::evaluate(IndFunction& s)
 	}
 	tmp /= 10.;
 	return tmp;
+}
+
+unsigned long long OneMax::getnbeval() const
+{
+	return m_nbeval;
 }
 
 

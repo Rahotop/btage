@@ -23,6 +23,8 @@ class Nk : public Problem<VectorBool>, public Problem<IndFunction>, public Probl
 	float evaluate(IndFunction& s);
 	float evaluate(IndArray& s);
 
+	unsigned long long getnbeval() const;
+
 	unsigned int getN() const;
 	void varLinks(std::ostream& o) const;
 
@@ -34,6 +36,7 @@ class Nk : public Problem<VectorBool>, public Problem<IndFunction>, public Probl
 
 	float *m_mat;
 	unsigned int *m_var;
+	unsigned long long m_nbeval;
 };
 
 #endif

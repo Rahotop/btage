@@ -20,7 +20,6 @@ class Problem : public Function<Indiv>
 
 	private:
 
-
 };
 
 #endif

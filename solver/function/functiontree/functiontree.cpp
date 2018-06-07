@@ -1,7 +1,7 @@
 #include "functiontree.hpp"
 
-std::default_random_engine FunctionTree::s_gen = std::default_random_engine(rand());
-std::uniform_real_distribution<float> FunctionTree::s_dist = std::uniform_real_distribution<float>(0.,1.);
+//std::default_random_engine FunctionTree::s_gen = std::default_random_engine(rand());
+//std::uniform_real_distribution<float> FunctionTree::s_dist = std::uniform_real_distribution<float>(0.,1.);
 
 FunctionTree::FunctionTree() :
 	Function<VectorBool>(),
@@ -16,7 +16,9 @@ FunctionTree::FunctionTree() :
 	m_scal(nullptr),
 	m_bitindex(nullptr),
 	m_isused(nullptr),
-	m_n(0)
+	m_n(0),
+	s_gen(rand()),
+	s_dist(0.,1.)
 {
 	
 }
@@ -34,7 +36,9 @@ FunctionTree::FunctionTree(const FunctionTree& fn) :
 	m_scal(new float[fn.m_maxsize]),
 	m_bitindex(new unsigned int[fn.m_maxsize]),
 	m_isused(new bool[fn.m_maxsize]),
-	m_n(fn.m_n)
+	m_n(fn.m_n),
+	s_gen(rand()),
+	s_dist(0.,1.)
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
@@ -63,7 +67,9 @@ FunctionTree::FunctionTree(const FunctionTree& fn, unsigned int node) :
 	m_scal(new float[fn.m_maxsize]),
 	m_bitindex(new unsigned int[fn.m_maxsize]),
 	m_isused(new bool[fn.m_maxsize]),
-	m_n(fn.m_n)
+	m_n(fn.m_n),
+	s_gen(rand()),
+	s_dist(0.,1.)
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
@@ -92,7 +98,9 @@ FunctionTree::FunctionTree(unsigned int maxsize, unsigned int depth, unsigned in
 	m_scal(new float[maxsize]),
 	m_bitindex(new unsigned int[maxsize]),
 	m_isused(new bool[m_maxsize]),
-	m_n(termset)
+	m_n(termset),
+	s_gen(rand()),
+	s_dist(0.,1.)
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
@@ -121,7 +129,9 @@ FunctionTree::FunctionTree(std::vector<unsigned int> depths, const std::vector<u
 	m_scal(new float[m_maxsize]),
 	m_bitindex(new unsigned int[m_maxsize]),
 	m_isused(new bool[m_maxsize]),
-	m_n(termset)
+	m_n(termset),
+	s_gen(rand()),
+	s_dist(0.,1.)
 {
 	for(unsigned int i(0); i < m_maxsize; ++i)
 	{
@@ -398,12 +408,12 @@ unsigned int FunctionTree::copy(const FunctionTree& f, unsigned int fnode, unsig
 
 	if(m_op[node] == 2)
 	{
-		unsigned int child = f.m_child1[fnode];
+		unsigned int child = f.m_child1[fnode];/*
 		while(f.m_op[child] == 2)
 		{
 			m_scal[node] *= f.m_scal[child];
 			child = f.m_child1[child];
-		}
+		}*/
 		m_child1[node] = copy(f, child, node);
 	}
 	else if(m_op[node] > 2)
@@ -525,25 +535,25 @@ float FunctionTree::evaluate(VectorBool& s, unsigned int node)
 		tmp = m_scal[node]*evaluate(s,m_child1[node]);
 	}
 	else if(m_op[node] == 3)
-	{
+	{/*
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
-		//tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
+		*/tmp = evaluate(s,m_child1[node]) == evaluate(s,m_child2[node]);
 	}
 	else if(m_op[node] == 4)
-	{
+	{/*
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
-		//tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+		*/tmp = std::max(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
 	}
 	else if(m_op[node] == 5)
-	{
+	{/*
 		float c1 = evaluate(s,m_child1[node]);
 		float c2 = evaluate(s,m_child2[node]);
 		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
-		//tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
+		*/tmp = std::min(evaluate(s,m_child1[node]),evaluate(s,m_child2[node]));
 	}
 	else if(m_op[node] == 6)
 	{
@@ -756,24 +766,24 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
-		//tmp = c1 == c2;
+		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? c1 == c2 : c1 + c2;
+		tmp = c1 == c2;
 	}
 	else if(m_op[node] == 4)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 
-		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
-		//tmp = std::max(c1, c2);
+		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::max(c1,c2) : c1 + c2;
+		tmp = std::max(c1, c2);
 	}
 	else if(m_op[node] == 5)
 	{
 		float c1 = (m_isvarin[bitChanged*m_maxsize+m_child1[node]]) ? evaluateInc(s,bitChanged,m_child1[node]) : m_preveval[m_child1[node]];
 		float c2 = (m_isvarin[bitChanged*m_maxsize+m_child2[node]]) ? evaluateInc(s,bitChanged,m_child2[node]) : m_preveval[m_child2[node]];
 		
-		tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
-		//tmp = std::min(c1, c2);
+		//tmp = ((c1 == 0 || c1 == 1) && (c2 == 0 || c2 == 1)) ? std::min(c1,c2) : c1 + c2;
+		tmp = std::min(c1, c2);
 	}
 	else if(m_op[node] == 6)
 	{
@@ -791,13 +801,13 @@ float FunctionTree::evaluateInc(VectorBool& s, unsigned int bitChanged, unsigned
 unsigned int FunctionTree::countOP(unsigned int op) const
 {
 	unsigned int tmp = 0;
-	if(op < 3)
+	//if(op < 3)
 	{
 		for(unsigned int i(0); i < m_maxsize; ++i)
 		{
 			tmp += m_isused[i] && (m_op[i] == op);
 		}
-	}
+	}/*
 	else if(op > 5)
 	{
 		for(unsigned int i(0); i < m_maxsize; ++i)
@@ -811,7 +821,7 @@ unsigned int FunctionTree::countOP(unsigned int op) const
 		{
 			tmp += m_isused[i] && (m_op[i] == op) && !isOPinSubTree(6,i);
 		}
-	}
+	}*/
 	return tmp;
 }
 

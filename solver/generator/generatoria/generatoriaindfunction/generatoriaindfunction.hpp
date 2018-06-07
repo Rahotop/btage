@@ -14,6 +14,7 @@ class GeneratorIAIndFunction : public GeneratorIA<IndFunction>
 	~GeneratorIAIndFunction();
 
 	IndFunction generate() const;
+	IndFunction generatenew() const;
 	void crossover(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 	void mutation(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const;
 

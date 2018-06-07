@@ -66,7 +66,7 @@ class Algogen : public Solver<Indiv>
 				}
 				else
 				{
-					newgen[i] = m_gen.generate();
+					newgen[i] = m_gen.generatenew();
 				}
 
 				newgen[i].setScore(Solver<Indiv>::m_fn.evaluate(newgen[i]));

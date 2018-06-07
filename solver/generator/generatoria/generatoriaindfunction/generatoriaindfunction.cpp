@@ -16,6 +16,12 @@ IndFunction GeneratorIAIndFunction::generate() const
 	return tmp;
 }
 
+IndFunction GeneratorIAIndFunction::generatenew() const
+{
+	IndFunction tmp(m_maxsize,m_depthinit,m_n,rand()%2);
+	return tmp;
+}
+
 void GeneratorIAIndFunction::crossover(const std::vector<IndFunction>& pop, std::vector<IndFunction>& newgen, unsigned int index) const
 {
 	IndFunction tmp1(pop[rand()%pop.size()]);

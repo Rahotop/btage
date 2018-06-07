@@ -25,6 +25,8 @@ class MaxSat : public Problem<VectorBool>, public Problem<IndFunction>, public P
 	float evaluate(IndFunction& s);
 	float evaluate(IndArray& s);
 
+	unsigned long long getnbeval() const;
+
 	unsigned int getN() const;
 	void varLinks(std::ostream& o) const;
 
@@ -33,6 +35,7 @@ class MaxSat : public Problem<VectorBool>, public Problem<IndFunction>, public P
 	unsigned int m_n;
 	unsigned int m_nbclauses;
 	std::vector<int> *m_clauses;
+	unsigned long long m_nbeval;
 };
 
 #endif

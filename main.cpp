@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 				{
 					srand(run[i].seed);
 					PbFunction pb(run[i].n, run[i].depthplus, run[i].depthmin);
-					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, run[i].n);
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, run[i].n, pb);
 					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
 
 					calculate<IndArray,PbFunction>(gnuplot, run[i], algo, pb);
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 				{
 					srand(run[i].seed);
 					Nk pb(run[i].pbfile);
-					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN());
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN(), pb);
 					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
 					run[i].n = pb.getN();
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 				{
 					srand(run[i].seed);
 					MaxSat pb(run[i].pbfile);
-					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN());
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, pb.getN(), pb);
 					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
 					run[i].n = pb.getN();
 
@@ -216,19 +216,19 @@ void plot3d(std::string path, opt run)
 	plot << "set ylabel \'nbOp\'" << std::endl;
 	plot << "set key outside" << std::endl;
 	plot << "set output \"" << run.out << "-0ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:8 with impulses lw 10 title 'Size'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:8 with lines title 'Size'" << std::endl;
 	plot << "set output \"" << run.out << "-1ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:3 with impulses lw 10 title 'Scal'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:3 with lines title 'Scal'" << std::endl;
 	plot << "set output \"" << run.out << "-2ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:4 with impulses lw 10 title 'Equal'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:4 with lines title 'Equal'" << std::endl;
 	plot << "set output \"" << run.out << "-3ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:5 with impulses lw 10 title 'Max'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:5 with lines title 'Max'" << std::endl;
 	plot << "set output \"" << run.out << "-4ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:6 with impulses lw 10 title 'Min'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:6 with lines title 'Min'" << std::endl;
 	plot << "set output \"" << run.out << "-5ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:7 with impulses lw 10 title 'Plus'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:7 with lines title 'Plus'" << std::endl;
 	plot << "set output \"" << run.out << "-6ratios-graph.jpg" << "\"" << std::endl;
-	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:9 with impulses lw 10 title 'Fitness'" << std::endl;
+	plot << "plot for [i=0:" << run.nbit << ":" << run.nbit/10-1 << "] \"" << run.out << "-ratios.dat\" every ::i*" << run.nbind << "::(i+1)*" << run.nbind << "-1 using 2:9 with lines title 'Fitness'" << std::endl;
 }
 
 void plot3d(opt run, std::string path)
@@ -263,7 +263,7 @@ void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<Indiv>& algo, PB& pb)
 	Plot<Indiv> graph(pb, run.out + "-algogen-graph.dat", run.out + "-gnuplot-algogen.sh");
 	graph.add(algo, {"fitness","size","avsize","nbscal","nbequal","nbmax","nbmin","nbplus"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
 
-	graph.save(run.out + "-algogen-graph.jpg", "fitness as a function of iterations "+getSettings(run));
+	graph.save(run.out + "-algogen-graph.jpg", "fitness as a function of iterations "+getSettings(run)+" nbeval: "+std::to_string(pb.getnbeval()));
 
 	gnuplot << "gnuplot " << run.out << "-gnuplot-algogen.sh" << std::endl;
 
@@ -281,7 +281,7 @@ void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<IndArray>& algo, PB& 
 	Plot<IndArray> graph(pb, run.out + "-algogen-graph.dat", run.out + "-gnuplot-algogen.sh");
 	graph.add(algo, {"fitness","size","avsize","AND","OR","EQUAL","<-","->"}, {"","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2","axes x1y2"});
 
-	graph.save(run.out + "-algogen-graph.jpg", "fitness as a function of iterations "+getSettings(run));
+	graph.save(run.out + "-algogen-graph.jpg", "fitness as a function of iterations "+getSettings(run)+" nbeval: "+std::to_string(pb.getnbeval()));
 
 	gnuplot << "gnuplot " << run.out << "-gnuplot-algogen.sh" << std::endl;
 

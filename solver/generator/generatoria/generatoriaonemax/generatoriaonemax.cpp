@@ -20,6 +20,16 @@ VectorBool GeneratorIAOneMax::generate() const
 	return tmp;
 }
 
+VectorBool GeneratorIAOneMax::generatenew() const
+{
+	VectorBool tmp(m_n);
+	for(unsigned int i(0); i < m_n; ++i)
+	{
+		tmp[i] = rand()%2;
+	}
+	return tmp;
+}
+
 void GeneratorIAOneMax::crossover(const std::vector<VectorBool>& pop, std::vector<VectorBool>& newgen, unsigned int index) const
 {
 	unsigned int s1 = rand()%pop.size();

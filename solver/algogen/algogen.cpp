@@ -43,7 +43,7 @@ IndArray Algogen<IndArray>::solve()
 			}
 			else
 			{
-				newgen[i] = m_gen.generate();
+				newgen[i] = m_gen.generatenew();
 			}
 
 			newgen[i].setScore(Solver<IndArray>::m_fn.evaluate(newgen[i]));

@@ -26,6 +26,8 @@ class FunctionArray : public Function<VectorBool>
 
 	void addRandom();
 	void add(const FunctionArray& f, unsigned int index);
+	void add(unsigned int var, bool varnot, float scal);
+	void add(float scal, unsigned int op, bool opnot, unsigned int var1, bool var1not, unsigned int var2, bool var2not);
 	void reconstruct(unsigned int index);
 	void erase(unsigned int index);
 	void mutate(unsigned int index);

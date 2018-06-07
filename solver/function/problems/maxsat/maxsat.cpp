@@ -1,6 +1,6 @@
 #include "maxsat.hpp"
 
-MaxSat::MaxSat(const std::string& path) : m_n(0), m_nbclauses(0), m_clauses(nullptr)
+MaxSat::MaxSat(const std::string& path) : m_n(0), m_nbclauses(0), m_clauses(nullptr), m_nbeval(0)
 {
 	std::ifstream in(path.c_str());
 
@@ -48,6 +48,7 @@ MaxSat::~MaxSat()
 
 float MaxSat::evaluate(VectorBool& s)
 {
+	++m_nbeval;
 	unsigned int sum = 0;
 	for(unsigned int i(0); i < m_nbclauses; ++i)
 	{
@@ -84,14 +85,31 @@ float MaxSat::evaluate(IndArray& s)
 	FunctionArray& fn = s.getFunction();
 	FixedSizeDescentInc<VectorBool> d(fn, gen);
 
+//	std::vector<VectorBool> nbsol;
+
 	float tmp = 0.;
 	for(unsigned int i = 0; i < 10; ++i)
 	{
 		VectorBool v = d.solve();
 		tmp += evaluate(v);
+/*
+		bool in = false;
+		for(unsigned int i(0); i < nbsol.size(); ++i)
+		{
+			in = (in || v == nbsol[i]) ? true : false;
+		}
+		if(!in)
+		{
+			nbsol.push_back(v);
+		}*/
 	}
 	tmp /= 10.;
-	return tmp;
+	return tmp;//*0.4+(nbsol.size()/10.)*0.6;
+}
+
+unsigned long long MaxSat::getnbeval() const
+{
+	return m_nbeval;
 }
 
 unsigned int MaxSat::getN() const

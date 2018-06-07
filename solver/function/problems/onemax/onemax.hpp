@@ -17,9 +17,12 @@ class OneMax : public Problem<VectorBool>, public Problem<IndFunction>
 	float evaluate(VectorBool& s);
 	float evaluate(IndFunction& s);
 
+	unsigned long long getnbeval() const;
+
 	private:
 
 	unsigned int m_n;
+	unsigned long long m_nbeval;
 };
 
 #endif

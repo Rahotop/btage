@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <iomanip>
 
 struct opt
 {
