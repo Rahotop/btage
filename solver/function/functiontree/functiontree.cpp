@@ -408,12 +408,12 @@ unsigned int FunctionTree::copy(const FunctionTree& f, unsigned int fnode, unsig
 
 	if(m_op[node] == 2)
 	{
-		unsigned int child = f.m_child1[fnode];/*
+		unsigned int child = f.m_child1[fnode];
 		while(f.m_op[child] == 2)
 		{
 			m_scal[node] *= f.m_scal[child];
 			child = f.m_child1[child];
-		}*/
+		}
 		m_child1[node] = copy(f, child, node);
 	}
 	else if(m_op[node] > 2)
