@@ -394,7 +394,7 @@ void FunctionArray::mutate(unsigned int index)
 			m_scal[index] *= -1;
 			m_not[index*m_maxsize+1] = !m_not[index*m_maxsize+1];
 		}
-		//m_scal[index] = (m_scal[index] > 1.) ? 1. : m_scal[index];
+		m_scal[index] = (m_scal[index] > 1.) ? 1. : m_scal[index];
 	}
 	else
 	{
@@ -730,7 +730,7 @@ void FunctionArray::simplification()
 			{
 				m_scal[i] += m_scal[j];
 				//m_scal[i] /= 2.;
-				//m_scal[i] = (m_scal[i] > 1.) ? 1. : m_scal[i];
+				m_scal[i] = (m_scal[i] > 1.) ? 1. : m_scal[i];
 				erase(j);
 			}
 			else if(areSubsOpposite(i*m_maxsize,j*m_maxsize))
@@ -742,7 +742,7 @@ void FunctionArray::simplification()
 					m_not[i*m_maxsize+1] = !m_not[i*m_maxsize+1];
 				}
 				//m_scal[i] /= 2.;
-				//m_scal[i] = (m_scal[i] > 1.) ? 1. : m_scal[i];
+				m_scal[i] = (m_scal[i] > 1.) ? 1. : m_scal[i];
 				erase(j);
 			}
 		}
