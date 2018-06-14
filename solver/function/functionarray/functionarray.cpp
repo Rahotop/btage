@@ -721,7 +721,7 @@ void FunctionArray::updateIsVarIn(unsigned int index)
 }
 
 void FunctionArray::simplification()
-{
+{/*
 	for(unsigned int i(0); i < m_width-1; ++i)
 	{
 		for(unsigned int j(i+1); j < m_width; ++j)
@@ -757,7 +757,7 @@ void FunctionArray::simplification()
 		{
 			++i;
 		}
-	}
+	}*/
 }
 
 bool FunctionArray::areSubsEqual(unsigned int index1, unsigned int index2, unsigned int offset1, unsigned int offset2) const
