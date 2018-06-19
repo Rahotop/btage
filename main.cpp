@@ -308,7 +308,7 @@ void graphalgogen(std::ofstream& gnuplot, opt run, Algogen<IndArray>& algo, PB& 
 		diversityPlot << "plot ";
 		for(unsigned int i(0); i < width; ++i)
 		{
-			diversityPlot << "\"" << run.out << "-diversity.dat\" using 1:" << 2+i << " with lines lt rgb \"gray\"";
+			diversityPlot << "\"" << run.out << "-diversity.dat\" using 1:" << 2+i << " with lines lt rgb \"black\"";
 			if(i < width-1)
 				diversityPlot << ",\\";
 			diversityPlot << std::endl;

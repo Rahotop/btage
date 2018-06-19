@@ -50,6 +50,7 @@ class FunctionArray : public Function<VectorBool>
 	unsigned int size(unsigned int node, unsigned int offset = 1) const;
 	unsigned int countOP(unsigned int op, unsigned int node, unsigned int offset = 1) const;
 	void show(std::ostream& o, unsigned int node, unsigned int offset = 1, unsigned int depth = 0) const;
+	void showClauses(std::ostream& o, unsigned int node, unsigned int offset = 1) const;
 	std::vector<unsigned int> varLinks(unsigned int node, unsigned int offset = 1) const;
 	unsigned int countVar(unsigned int var, unsigned int node, bool neg, unsigned int offset = 1) const;
 	void updateIsVarIn(unsigned int node, unsigned int index, unsigned int offset = 1);

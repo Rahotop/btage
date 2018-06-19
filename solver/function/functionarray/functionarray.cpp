@@ -695,7 +695,114 @@ void FunctionArray::show(std::ostream& o, unsigned int node, unsigned int offset
 
 void FunctionArray::showClauses(std::ostream& o) const
 {
-	o << "";
+	unsigned int count = 0;
+	for(unsigned int j(0); j < m_maxsize; ++j)
+	{
+		for(unsigned int i(0); i < m_width; ++i)
+		{
+			if(j == size(i*m_maxsize))
+			{
+				o << "\\Tree ";
+				showClauses(o, i*m_maxsize);
+
+				if(count < 3)
+				{
+					o << "& ";
+					++count;
+				}
+				else
+				{
+					o << "\\\\" << std::endl << "\\hline" << std::endl;;
+					count = 0;
+				}
+			}
+		}
+	}
+	count = 0;
+	for(unsigned int j(0); j < m_maxsize; ++j)
+	{
+		for(unsigned int i(0); i < m_width; ++i)
+		{
+			if(j == size(i*m_maxsize))
+			{
+				o <<  m_scal[i];
+
+				if(count < 3)
+				{
+					o << "& ";
+					++count;
+				}
+				else
+				{
+					o << "\\\\" << std::endl << "\\hline" << std::endl;;
+					count = 0;
+				}
+			}
+		}
+	}
+}
+
+void FunctionArray::showClauses(std::ostream& o, unsigned int node, unsigned int offset) const
+{
+	if(m_op[node+offset] > 15)
+	{
+		if(offset == 1)
+			o << "[.";
+		if(m_not[node+offset])
+			o << "$\\neg$";
+		o << "X" << m_op[node+offset]-16 << " ";
+		if(offset == 1)
+			o << "]";
+	}
+	else
+	{
+		o << "[.$";
+		if(m_not[node+offset])
+			o << "\\neg ";
+
+		switch(m_op[node+offset])
+		{
+			case 0: o << "\\bot";
+				break;
+			case 1: o << "\\land";
+				break;
+			case 2: o << "\\neg\\to";
+				break;
+			case 3: o << "a";
+				break;
+			case 4: o << "\\neg\\gets";
+				break;
+			case 5: o << "b";
+				break;
+			case 6: o << "\\neg\\leftrightarrow";
+				break;
+			case 7: o << "\\lor";
+				break;
+			case 8: o << "\\neg\\lor";
+				break;
+			case 9: o << "\\leftrightarrow";
+				break;
+			case 10: o << "\\neg a";
+				break;
+			case 11: o << "\\gets";
+				break;
+			case 12: o << "\\neg b";
+				break;
+			case 13: o << "\\to";
+				break;
+			case 14: o << "\\neg\\land";
+				break;
+			case 15: o << "\\top";
+				break;
+		}
+
+		o << "$ ";
+
+		showClauses(o, node, offset*2);
+		showClauses(o, node, offset*2+1);
+
+		o << "] ";
+	}
 }
 
 void FunctionArray::updateIsVarIn(unsigned int node, unsigned int index, unsigned int offset)
