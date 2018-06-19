@@ -305,14 +305,14 @@ void FunctionArray::addRandom()
 {
 	if(!isfull())
 	{
+		simplification();
+	}
+	if(!isfull())
+	{
 		construct(m_width*m_maxsize, rand()%2);
 		m_scal[m_width] = s_dist(s_gen);
 		updateIsVarIn(m_width);
 		++m_width;
-	}
-	else
-	{
-		simplification();
 	}
 }
 
@@ -395,12 +395,12 @@ void FunctionArray::mutate(unsigned int index)
 			m_not[index*m_maxsize+1] = !m_not[index*m_maxsize+1];
 		}
 		m_scal[index] = (m_scal[index] > 1.) ? 1. : m_scal[index];
+
+		mut = rand()%(tmp);
 	}
-	else
-	{
-		mutate(index*m_maxsize,mut);
-		updateIsVarIn(index);
-	}
+
+	mutate(index*m_maxsize,mut);
+	updateIsVarIn(index);
 }
 
 int FunctionArray::mutate(unsigned int node, int thisone, unsigned int offset)
@@ -411,7 +411,9 @@ int FunctionArray::mutate(unsigned int node, int thisone, unsigned int offset)
 		{
 			if(rand()%10)
 			{
-				m_op[node+offset] = m_fnset[rand()%m_fnset.size()];
+				unsigned int tmp = m_fnset[rand()%m_fnset.size()];
+				while(tmp == m_op[node+offset]) tmp = m_fnset[rand()%m_fnset.size()];
+				m_op[node+offset] = tmp;
 				m_not[node+offset] = rand()%2;
 			}
 			else
@@ -422,9 +424,11 @@ int FunctionArray::mutate(unsigned int node, int thisone, unsigned int offset)
 		}
 		else
 		{
-			if(rand()%2)
+			if(rand()%2 || offset*2+1 >= m_maxsize)
 			{
-				m_op[node+offset] = 16 + rand()%m_n;
+				unsigned int tmp = 16 + rand()%m_n;
+				while(tmp == m_op[node+offset]) tmp = 16 + rand()%m_n;
+				m_op[node+offset] = tmp;
 				m_not[node+offset] = rand()%2;
 			}
 			else
@@ -500,6 +504,8 @@ bool FunctionArray::isfull() const
 
 float FunctionArray::operator==(const FunctionArray& f)
 {
+	if(!m_width)
+		return 0;
 	unsigned int tmp = 0;
 	for(unsigned int i(0); i < m_width; ++i)
 	{
