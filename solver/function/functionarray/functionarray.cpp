@@ -303,7 +303,7 @@ void FunctionArray::makeCurrentPrev(unsigned int bitChanged)
 
 void FunctionArray::addRandom()
 {
-	if(!isfull())
+	if(isfull())
 	{
 		simplification();
 	}
