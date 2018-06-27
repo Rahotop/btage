@@ -88,7 +88,7 @@ float MaxSat::evaluate(IndArray& s)
 //	std::vector<VectorBool> nbsol;
 
 	float tmp = 0.;
-	for(unsigned int i = 0; i < 30; ++i)
+	for(unsigned int i = 0; i < 10; ++i)
 	{
 		VectorBool v = d.solve();
 		tmp += evaluate(v);
@@ -103,7 +103,7 @@ float MaxSat::evaluate(IndArray& s)
 			nbsol.push_back(v);
 		}*/
 	}
-	tmp /= 30.;
+	tmp /= 10.;
 	return tmp;//*0.4+(nbsol.size()/10.)*0.6;
 }
 

@@ -75,12 +75,12 @@ float Nk::evaluate(IndArray& s)
 	FixedSizeDescentInc<VectorBool> d(fn, gen);
 
 	float tmp = 0.;
-	for(unsigned int i(0); i < 30; ++i)
+	for(unsigned int i(0); i < 10; ++i)
 	{
 		VectorBool v = d.solve(); 
 		tmp += evaluate(v);
 	}
-	tmp /= 30.;
+	tmp /= 10.;
 	return tmp;
 }
 
