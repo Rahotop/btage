@@ -59,6 +59,12 @@ std::vector<opt> getopt(std::vector<std::string> args)
 			tmp.back().pbfile = args[i+1];
 			i += 2;
 		}
+		else if(args[i] == "-onemax")
+		{
+			tmp.back().onemax = true;
+			tmp.back().n = std::stoi(args[i+1]);
+			i += 2;
+		}
 		else if(args[i] == "-treesize")
 		{
 			tmp.back().maxsizetree = std::stoi(args[i+1]);

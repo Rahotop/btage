@@ -14,6 +14,7 @@ struct opt
 		pbtree(false),
 		nk(false),
 		maxsat(false),
+		onemax(false),
 		depthplus(1),
 		depthmin(1),
 		n(16),
@@ -47,6 +48,7 @@ struct opt
 	bool pbtree;
 	bool nk;
 	bool maxsat;
+	bool onemax;
 	unsigned int depthplus;
 	unsigned int depthmin;
 	unsigned int n;

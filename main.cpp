@@ -80,6 +80,18 @@ int main(int argc, char **argv)
 
 					calculate<IndArray,MaxSat>(gnuplot, run[i], algo, pb);
 				}
+
+				//OneMax
+
+				else if(run[i].onemax)
+				{
+					srand(run[i].seed);
+					OneMax pb(run[i].n);
+					GeneratorIAIndArray gen(run[i].maxsizetree, run[i].maxdepth, run[i].initwidth, run[i].initdepth, run[i].n, pb);
+					Algogen<IndArray> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+
+					calculate<IndArray,OneMax>(gnuplot, run[i], algo, pb);
+				}
 			}
 			else
 			{
@@ -119,6 +131,18 @@ int main(int argc, char **argv)
 					run[i].n = pb.getN();
 
 					calculate<IndFunction,MaxSat>(gnuplot, run[i], algo, pb);
+				}
+
+				//OneMax
+
+				else if(run[i].onemax)
+				{
+					srand(run[i].seed);
+					OneMax pb(run[i].n);
+					GeneratorIAIndFunction gen(run[i].n, run[i].maxsizetree, run[i].initdepth);
+					Algogen<IndFunction> algo(pb,gen,run[i].nbind,run[i].nbit,run[i].cross,run[i].copy,run[i].mutation,run[i].newop);
+
+					calculate<IndFunction,OneMax>(gnuplot, run[i], algo, pb);
 				}
 			}
 		}
